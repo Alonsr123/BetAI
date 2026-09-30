@@ -12,11 +12,11 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     res.status(200).json({
-      statusHTTP: response.status,
+      http: response.status,
       resultados: data.results,
-      errores: data.errors,
       paging: data.paging,
-      primerPartido: data.response?.[0] || null
+      errores: data.errors,
+      parametros: data.parameters
     });
 
   } catch (error) {
