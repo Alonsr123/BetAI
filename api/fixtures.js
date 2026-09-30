@@ -9,13 +9,35 @@ export default async function handler(req, res) {
       }
     );
 
+    if (!response.ok) {
+      return res.status(response.status).json({
+        error: "Error al consultar API-Football"
+      });
+    }
+
     const data = await response.json();
 
-    res.status(200).json(data);
+    const partidos = (data.response || []).map((item) => ({
+      id: item.fixture.id,
+      fecha: item.fixture.date,
+      estado: item.fixture.status.short,
+      local: item.teams.home.name,
+      visitante: item.teams.away.name,
+      logoLocal: item.teams.home.logo,
+      logoVisitante: item.teams.away.logo,
+      liga: item.league.name,
+      pais: item.league.country
+    }));
+
+    res.status(200).json({
+      total: partidos.length,
+      partidos
+    });
 
   } catch (error) {
     res.status(500).json({
-      error: "No se pudieron obtener los partidos"
+      error: "Error interno",
+      detalle: error.message
     });
   }
 }
