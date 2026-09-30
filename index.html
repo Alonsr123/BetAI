@@ -1,710 +1,999 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#080c16">
-  <title>BetAI</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#080c16">
+<title>BetAI</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 
-    body {
-      margin: 0;
-      background: #080c16;
-      color: #f5f7fb;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-    }
+body{
+  margin:0;
+  background:#080c16;
+  color:#f5f7fb;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+}
 
-    button {
-      font: inherit;
-    }
+button{
+  font:inherit;
+  cursor:pointer;
+}
 
-    .app {
-      max-width: 700px;
-      margin: auto;
-      min-height: 100vh;
-      padding-bottom: 95px;
-    }
+.app{
+  max-width:720px;
+  margin:auto;
+  min-height:100vh;
+  padding-bottom:95px;
+}
 
-    .header {
-      padding: 22px 18px 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+.header{
+  padding:22px 18px 12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
 
-    .logo {
-      font-size: 28px;
-      font-weight: 800;
-      letter-spacing: -1px;
-    }
+.logo{
+  font-size:28px;
+  font-weight:800;
+}
 
-    .logo span {
-      color: #6ee7b7;
-    }
+.logo span{
+  color:#6ee7b7;
+}
 
-    .subtitle {
-      color: #94a3b8;
-      font-size: 12px;
-      margin-top: 3px;
-    }
+.subtitle{
+  color:#94a3b8;
+  font-size:12px;
+  margin-top:3px;
+}
 
-    .demo {
-      background: #15352c;
-      color: #6ee7b7;
-      border-radius: 20px;
-      padding: 7px 10px;
-      font-size: 11px;
-      font-weight: 700;
-    }
+.demo{
+  background:#15352c;
+  color:#6ee7b7;
+  border-radius:20px;
+  padding:7px 10px;
+  font-size:11px;
+  font-weight:700;
+}
 
-    .content {
-      padding: 10px 18px;
-    }
+.content{
+  padding:10px 18px;
+}
 
-    h1 {
-      font-size: 26px;
-      margin: 12px 0 5px;
-    }
+h1{
+  font-size:26px;
+  margin:12px 0 5px;
+}
 
-    .intro {
-      color: #94a3b8;
-      margin: 0 0 20px;
-      font-size: 14px;
-    }
+.intro{
+  color:#94a3b8;
+  margin:0 0 20px;
+  font-size:14px;
+}
 
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
+.card{
+  background:#111827;
+  border:1px solid #253047;
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:12px;
+}
 
-    .card {
-      background: #111827;
-      border: 1px solid #253047;
-      border-radius: 18px;
-      padding: 16px;
-      margin-bottom: 12px;
-    }
+.section{
+  font-size:17px;
+  font-weight:750;
+  margin:20px 0 10px;
+}
 
-    .label {
-      color: #94a3b8;
-      font-size: 12px;
-    }
+.country{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:16px;
+  background:#111827;
+  border:1px solid #253047;
+  border-radius:16px;
+  margin-bottom:10px;
+}
 
-    .number {
-      font-size: 25px;
-      font-weight: 800;
-      margin-top: 7px;
-    }
+.country-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
 
-    .section {
-      font-size: 17px;
-      font-weight: 750;
-      margin: 23px 0 10px;
-    }
+.flag{
+  font-size:27px;
+}
 
-    .match {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-    }
+.country-name{
+  font-weight:750;
+}
 
-    .teams {
-      font-size: 15px;
-      font-weight: 700;
-      line-height: 1.6;
-    }
+.country-count{
+  color:#94a3b8;
+  font-size:11px;
+  margin-top:3px;
+}
 
-    .league {
-      color: #94a3b8;
-      font-size: 11px;
-      margin-bottom: 4px;
-    }
+.arrow{
+  color:#6ee7b7;
+  font-size:20px;
+}
 
-    .time {
-      color: #94a3b8;
-      font-size: 12px;
-      text-align: right;
-    }
+.league{
+  padding:16px;
+  background:#111827;
+  border:1px solid #253047;
+  border-radius:16px;
+  margin-bottom:10px;
+}
 
-    .analyse {
-      margin-top: 8px;
-      border: 0;
-      background: #6ee7b7;
-      color: #062017;
-      font-weight: 800;
-      border-radius: 10px;
-      padding: 9px 12px;
-    }
+.league-name{
+  font-size:16px;
+  font-weight:750;
+}
 
-    .hero {
-      background: linear-gradient(135deg, #12261f, #111827);
-      border: 1px solid #244638;
-      border-radius: 20px;
-      padding: 18px;
-      margin-bottom: 14px;
-    }
+.league-info{
+  color:#94a3b8;
+  font-size:11px;
+  margin-top:4px;
+}
 
-    .hero-title {
-      font-size: 18px;
-      font-weight: 800;
-    }
+.match{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
 
-    .hero-text {
-      color: #a8b3c4;
-      font-size: 13px;
-      line-height: 1.5;
-      margin: 8px 0 15px;
-    }
+.teams{
+  font-size:15px;
+  font-weight:700;
+  line-height:1.7;
+}
 
-    .hero-button {
-      border: 0;
-      background: #6ee7b7;
-      color: #062017;
-      padding: 11px 15px;
-      border-radius: 12px;
-      font-weight: 800;
-    }
+.time{
+  color:#94a3b8;
+  font-size:12px;
+  text-align:right;
+}
 
-    .screen {
-      display: none;
-    }
+.analyse{
+  margin-top:7px;
+  border:0;
+  background:#6ee7b7;
+  color:#062017;
+  font-weight:800;
+  border-radius:10px;
+  padding:9px 12px;
+}
 
-    .screen.active {
-      display: block;
-    }
+.back{
+  border:0;
+  background:#172033;
+  color:#fff;
+  border-radius:10px;
+  padding:9px 12px;
+  margin-bottom:10px;
+}
 
-    .back {
-      border: 0;
-      background: #172033;
-      color: white;
-      border-radius: 10px;
-      padding: 9px 12px;
-      margin-bottom: 8px;
-    }
+.screen{
+  display:none;
+}
 
-    .probability {
-      margin-top: 13px;
-    }
+.screen.active{
+  display:block;
+}
 
-    .prob-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 13px;
-      margin-bottom: 6px;
-    }
+.empty{
+  text-align:center;
+  color:#94a3b8;
+  padding:35px 15px;
+}
 
-    .bar {
-      height: 8px;
-      background: #202a3c;
-      border-radius: 20px;
-      overflow: hidden;
-      margin-bottom: 13px;
-    }
+.bottom{
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  background:rgba(8,12,22,.97);
+  border-top:1px solid #253047;
+  z-index:10;
+}
 
-    .fill {
-      height: 100%;
-      background: #6ee7b7;
-      border-radius: 20px;
-    }
+.bottom-inner{
+  max-width:720px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  padding:8px 10px calc(8px + env(safe-area-inset-bottom));
+}
 
-    .xg {
-      display: flex;
-      justify-content: space-between;
-      text-align: center;
-    }
+.nav-button{
+  background:none;
+  border:0;
+  color:#718096;
+  padding:8px 4px;
+  font-size:11px;
+}
 
-    .xg-value {
-      font-size: 28px;
-      font-weight: 800;
-    }
+.nav-button.active{
+  color:#6ee7b7;
+  font-weight:800;
+}
 
-    .note {
-      color: #94a3b8;
-      font-size: 12px;
-      line-height: 1.5;
-    }
+.nav-icon{
+  display:block;
+  font-size:19px;
+  margin-bottom:3px;
+}
 
-    .bottom {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(8,12,22,.97);
-      border-top: 1px solid #253047;
-      z-index: 10;
-    }
+.prob-row{
+  display:flex;
+  justify-content:space-between;
+  font-size:13px;
+  margin-top:13px;
+}
 
-    .bottom-inner {
-      max-width: 700px;
-      margin: auto;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
-    }
+.bar{
+  height:8px;
+  background:#202a3c;
+  border-radius:20px;
+  overflow:hidden;
+  margin:6px 0 12px;
+}
 
-    .nav-button {
-      background: none;
-      border: 0;
-      color: #718096;
-      padding: 8px 4px;
-      font-size: 11px;
-    }
+.fill{
+  height:100%;
+  background:#6ee7b7;
+  border-radius:20px;
+}
 
-    .nav-button.active {
-      color: #6ee7b7;
-      font-weight: 800;
-    }
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
 
-    .nav-icon {
-      display: block;
-      font-size: 19px;
-      margin-bottom: 3px;
-    }
-  </style>
+.label{
+  color:#94a3b8;
+  font-size:12px;
+}
+
+.number{
+  font-size:25px;
+  font-weight:800;
+  margin-top:7px;
+}
+
+.note{
+  color:#94a3b8;
+  font-size:12px;
+  line-height:1.5;
+}
+
+</style>
 </head>
 
 <body>
 
 <div class="app">
 
-  <!-- CABECERA -->
-  <header class="header">
-    <div>
-      <div class="logo">Bet<span>AI</span></div>
-      <div class="subtitle">Análisis inteligente de fútbol</div>
-    </div>
-    <div class="demo">DEMO</div>
-  </header>
-
-
-  <!-- INICIO -->
-  <section id="home" class="screen active">
-    <div class="content">
-
-      <h1>Panel principal</h1>
-      <p class="intro">
-        Analiza partidos, estadísticas y probabilidades desde un solo lugar.
-      </p>
-
-      <div class="hero">
-        <div class="hero-title">⚽ Bienvenido a BetAI</div>
-        <div class="hero-text">
-          Estamos construyendo tu plataforma personal de análisis de fútbol.
-          Esta primera versión funciona directamente desde tu iPhone.
-        </div>
-        <button class="hero-button" onclick="showScreen('matches')">
-          Ver partidos
-        </button>
-      </div>
-
-      <div class="grid">
-
-        <div class="card">
-          <div class="label">Partidos hoy</div>
-          <div class="number">4</div>
-        </div>
-
-        <div class="card">
-          <div class="label">Ligas</div>
-          <div class="number">3</div>
-        </div>
-
-        <div class="card">
-          <div class="label">Análisis</div>
-          <div class="number">12</div>
-        </div>
-
-        <div class="card">
-          <div class="label">Simulaciones</div>
-          <div class="number">240</div>
-        </div>
-
-      </div>
-
-      <div class="section">Próximos partidos</div>
-
-      <div class="card">
-        <div class="match">
-          <div>
-            <div class="league">La Liga</div>
-            <div class="teams">
-              Barcelona<br>
-              Sevilla
-            </div>
-          </div>
-
-          <div class="time">
-            20:00<br>
-            <button class="analyse" onclick="showMatch('barcelona')">
-              Analizar
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="match">
-          <div>
-            <div class="league">Premier League</div>
-            <div class="teams">
-              Arsenal<br>
-              Chelsea
-            </div>
-          </div>
-
-          <div class="time">
-            20:30<br>
-            <button class="analyse" onclick="showMatch('arsenal')">
-              Analizar
-            </button>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-
-  <!-- PARTIDOS -->
-  <section id="matches" class="screen">
-    <div class="content">
-
-      <h1>Partidos</h1>
-      <p class="intro">
-        Selecciona un partido para consultar su análisis.
-      </p>
-
-      <div class="card">
-        <div class="match">
-          <div>
-            <div class="league">La Liga</div>
-            <div class="teams">
-              Barcelona<br>
-              Sevilla
-            </div>
-          </div>
-
-          <div class="time">
-            20:00<br>
-            <button class="analyse" onclick="showMatch('barcelona')">
-              Analizar
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="match">
-          <div>
-            <div class="league">Premier League</div>
-            <div class="teams">
-              Arsenal<br>
-              Chelsea
-            </div>
-          </div>
-
-          <div class="time">
-            20:30<br>
-            <button class="analyse" onclick="showMatch('arsenal')">
-              Analizar
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="match">
-          <div>
-            <div class="league">Serie A</div>
-            <div class="teams">
-              Inter<br>
-              Roma
-            </div>
-          </div>
-
-          <div class="time">
-            21:00<br>
-            <button class="analyse" onclick="showMatch('inter')">
-              Analizar
-            </button>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
+<header class="header">
+  <div>
+    <div class="logo">Bet<span>AI</span></div>
+    <div class="subtitle">Análisis inteligente de fútbol</div>
+  </div>
+  <div class="demo">DEMO</div>
+</header>
 
-  <!-- DETALLE DEL PARTIDO -->
-  <section id="detail" class="screen">
-    <div class="content">
 
-      <button class="back" onclick="showScreen('matches')">
-        ← Volver
-      </button>
+<!-- INICIO -->
 
-      <h1 id="matchTitle">Barcelona vs Sevilla</h1>
+<section id="home" class="screen active">
 
-      <p class="intro" id="matchLeague">
-        La Liga · 20:00
-      </p>
+<div class="content">
 
-      <div class="grid">
+<h1>Panel principal</h1>
 
-        <div class="card">
-          <div class="label">xG local</div>
-          <div class="number" id="xgHome">1.90</div>
-        </div>
+<p class="intro">
+Tu centro personal de análisis de fútbol.
+</p>
 
-        <div class="card">
-          <div class="label">xG visitante</div>
-          <div class="number" id="xgAway">0.90</div>
-        </div>
+<div class="card">
 
-      </div>
+<strong>⚽ Próximo paso</strong>
 
-      <div class="card">
+<p class="note">
+Selecciona una competición y después el partido que quieras analizar.
+</p>
 
-        <div class="section">Probabilidades 1X2</div>
+<button class="analyse" onclick="showScreen('countries')">
+Ver partidos
+</button>
 
-        <div class="probability">
+</div>
 
-          <div class="prob-row">
-            <span>Victoria local</span>
-            <b id="pHome">62%</b>
-          </div>
+<div class="grid">
 
-          <div class="bar">
-            <div id="barHome" class="fill" style="width:62%"></div>
-          </div>
+<div class="card">
+<div class="label">Competiciones</div>
+<div class="number">16</div>
+</div>
 
+<div class="card">
+<div class="label">Países</div>
+<div class="number">10</div>
+</div>
 
-          <div class="prob-row">
-            <span>Empate</span>
-            <b id="pDraw">21%</b>
-          </div>
+</div>
 
-          <div class="bar">
-            <div id="barDraw" class="fill" style="width:21%"></div>
-          </div>
+</div>
 
+</section>
 
-          <div class="prob-row">
-            <span>Victoria visitante</span>
-            <b id="pAway">17%</b>
-          </div>
+
+<!-- PAÍSES -->
 
-          <div class="bar">
-            <div id="barAway" class="fill" style="width:17%"></div>
-          </div>
+<section id="countries" class="screen">
 
-        </div>
+<div class="content">
 
-      </div>
+<button class="back" onclick="showScreen('home')">
+← Inicio
+</button>
 
+<h1>Países</h1>
 
-      <div class="card">
+<p class="intro">
+Selecciona un país.
+</p>
 
-        <div class="section">Marcadores simulados</div>
 
-        <div class="xg">
-          <div>
-            <div class="label">Resultado</div>
-            <div class="xg-value">2–1</div>
-          </div>
+<div class="country" onclick="showLeagues('spain')">
+<div class="country-left">
+<div class="flag">🇪🇸</div>
+<div>
+<div class="country-name">España</div>
+<div class="country-count">2 competiciones</div>
+</div>
+</div>
+<div class="arrow">›</div>
+</div>
 
-          <div>
-            <div class="label">Probabilidad</div>
-            <div class="xg-value">12%</div>
-          </div>
-        </div>
 
-      </div>
+<div class="country" onclick="showLeagues('england')">
+<div class="country-left">
+<div class="flag">🏴</div>
+<div>
+<div class="country-name">Inglaterra</div>
+<div class="country-count">2 competiciones</div>
+</div>
+</div>
+<div class="arrow">›</div>
+</div>
 
 
-      <div class="card">
+<div class="country" onclick="showLeagues('italy')">
+<div class="country-left">
+<div class="flag">🇮🇹</div>
+<div>
+<div class="country-name">Italia</div>
+<div class="country-count">2 competiciones</div>
+</div>
+</div>
+<div class="arrow">›</div>
+</div>
 
-        <div class="section">Análisis</div>
 
-        <p class="note">
-          Esta versión utiliza datos de demostración. Más adelante conectaremos
-          estadísticas reales, forma reciente, lesiones, enfrentamientos,
-          xG, cuotas y simulaciones.
-        </p>
+<div class="country" onclick="showLeagues('germany')">
+<div class="country-left">
+<div class="flag">🇩🇪</div>
+<div>
+<div class="country-name">Alemania</div>
+<div class="country-count">2 competiciones</div>
+</div>
+</div>
+<div class="arrow">›</div>
+</div>
 
-      </div>
 
-    </div>
-  </section>
+<div class="country" onclick="showLeagues('france')">
+<div class="country-left">
+<div class="flag">🇫🇷</div>
+<div>
+<div class="country-name">Francia</div>
+<div class="country-count">2 competiciones</div>
+</div>
+</div>
+<div class="arrow">›</div>
+</div>
 
 
-  <!-- MIS APUESTAS -->
-  <section id="bets" class="screen">
-    <div class="content">
+<div class="country" onclick="showLeagues('nordic')">
+<div class="country-left">
+<div class="flag">🌍</div>
+<div>
+<div class="country-name">Países nórdicos</div>
+<div class="country-count">5 competiciones</div>
+</div>
+</div>
+<div class="arrow">›</div>
+</div>
 
-      <h1>Mis apuestas</h1>
 
-      <p class="intro">
-        Aquí podremos registrar y analizar tus apuestas.
-      </p>
+<div class="country" onclick="showChampions()">
+<div class="country-left">
+<div class="flag">🏆</div>
+<div>
+<div class="country-name">Champions League</div>
+<div class="country-count">Competición europea</div>
+</div>
+</div>
+<div class="arrow">›</div>
+</div>
 
-      <div class="card">
+</div>
 
-        <div class="section">Próximamente</div>
+</section>
 
-        <p class="note">
-          Esta sección permitirá guardar apuestas, cuotas, resultados,
-          beneficios y rendimiento histórico.
-        </p>
 
-      </div>
+<!-- LIGAS -->
 
-    </div>
-  </section>
+<section id="leagues" class="screen">
 
+<div class="content">
 
-  <!-- NAVEGACIÓN -->
-  <nav class="bottom">
+<button class="back" onclick="showScreen('countries')">
+← Países
+</button>
 
-    <div class="bottom-inner">
+<h1 id="leagueTitle">España</h1>
 
-      <button id="navHome" class="nav-button active"
-              onclick="showScreen('home')">
-        <span class="nav-icon">⌂</span>
-        Inicio
-      </button>
+<p class="intro">
+Selecciona una competición.
+</p>
 
-      <button id="navMatches" class="nav-button"
-              onclick="showScreen('matches')">
-        <span class="nav-icon">⚽</span>
-        Partidos
-      </button>
+<div id="leagueList"></div>
 
-      <button id="navBets" class="nav-button"
-              onclick="showScreen('bets')">
-        <span class="nav-icon">▣</span>
-        Mis apuestas
-      </button>
+</div>
 
-    </div>
+</section>
 
-  </nav>
+
+<!-- PARTIDOS -->
+
+<section id="matches" class="screen">
+
+<div class="content">
+
+<button class="back" onclick="showScreen('leagues')">
+← Competiciones
+</button>
+
+<h1 id="matchesTitle">LaLiga</h1>
+
+<p class="intro">
+Partidos disponibles.
+</p>
+
+
+<div class="card">
+
+<div class="label">HOY</div>
+
+<br>
+
+<div class="match">
+
+<div>
+<div class="teams">
+Barcelona<br>
+Sevilla
+</div>
+</div>
+
+<div class="time">
+
+20:00
+
+<br>
+
+<button class="analyse"
+onclick="showMatch('barcelona')">
+Analizar
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="label">HOY</div>
+
+<br>
+
+<div class="match">
+
+<div>
+<div class="teams">
+Atlético de Madrid<br>
+Villarreal
+</div>
+</div>
+
+<div class="time">
+
+21:00
+
+<br>
+
+<button class="analyse"
+onclick="showMatch('atletico')">
+Analizar
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="label">MAÑANA</div>
+
+<br>
+
+<div class="match">
+
+<div>
+<div class="teams">
+Real Madrid<br>
+Valencia
+</div>
+</div>
+
+<div class="time">
+
+21:00
+
+<br>
+
+<button class="analyse"
+onclick="showMatch('madrid')">
+Analizar
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ANÁLISIS -->
+
+<section id="analysis" class="screen">
+
+<div class="content">
+
+<button class="back" onclick="showScreen('matches')">
+← Partidos
+</button>
+
+<h1 id="matchTitle">
+Barcelona vs Sevilla
+</h1>
+
+<p class="intro" id="matchInfo">
+LaLiga · 20:00
+</p>
+
+
+<div class="grid">
+
+<div class="card">
+<div class="label">xG local</div>
+<div class="number" id="xgHome">1.90</div>
+</div>
+
+<div class="card">
+<div class="label">xG visitante</div>
+<div class="number" id="xgAway">0.90</div>
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="section">
+Probabilidades 1X2
+</div>
+
+
+<div class="prob-row">
+<span>Victoria local</span>
+<strong id="pHome">62%</strong>
+</div>
+
+<div class="bar">
+<div id="barHome" class="fill" style="width:62%"></div>
+</div>
+
+
+<div class="prob-row">
+<span>Empate</span>
+<strong id="pDraw">21%</strong>
+</div>
+
+<div class="bar">
+<div id="barDraw" class="fill" style="width:21%"></div>
+</div>
+
+
+<div class="prob-row">
+<span>Victoria visitante</span>
+<strong id="pAway">17%</strong>
+</div>
+
+<div class="bar">
+<div id="barAway" class="fill" style="width:17%"></div>
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="section">
+Marcadores simulados
+</div>
+
+<div class="prob-row">
+<span>2 - 1</span>
+<strong>12%</strong>
+</div>
+
+<div class="prob-row">
+<span>1 - 0</span>
+<strong>10%</strong>
+</div>
+
+<div class="prob-row">
+<span>1 - 1</span>
+<strong>9%</strong>
+</div>
+
+<div class="prob-row">
+<span>2 - 0</span>
+<strong>8%</strong>
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="section">
+Estado del modelo
+</div>
+
+<p class="note">
+⚠️ Datos de demostración. En la siguiente fase sustituiremos estos valores por datos reales y construiremos el modelo estadístico.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- MIS APUESTAS -->
+
+<section id="bets" class="screen">
+
+<div class="content">
+
+<h1>Mis apuestas</h1>
+
+<p class="intro">
+Seguimiento personal.
+</p>
+
+<div class="card">
+
+<div class="section">
+Próximamente
+</div>
+
+<p class="note">
+Aquí guardaremos tus apuestas, cuotas, resultados,
+beneficios y rendimiento histórico.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- NAVEGACIÓN -->
+
+<nav class="bottom">
+
+<div class="bottom-inner">
+
+<button id="navHome"
+class="nav-button active"
+onclick="showScreen('home')">
+
+<span class="nav-icon">⌂</span>
+Inicio
+
+</button>
+
+
+<button id="navMatches"
+class="nav-button"
+onclick="showScreen('countries')">
+
+<span class="nav-icon">⚽</span>
+Partidos
+
+</button>
+
+
+<button id="navBets"
+class="nav-button"
+onclick="showScreen('bets')">
+
+<span class="nav-icon">▣</span>
+Mis apuestas
+
+</button>
+
+</div>
+
+</nav>
 
 </div>
 
 
 <script>
 
-  function showScreen(screenName) {
+var leagues = {
 
-    var screens = document.querySelectorAll(".screen");
+spain: {
+title:"🇪🇸 España",
+items:["LaLiga","Segunda División"]
+},
 
-    screens.forEach(function(screen) {
-      screen.classList.remove("active");
-    });
+england:{
+title:"🏴 Inglaterra",
+items:["Premier League","Championship"]
+},
 
-    var selected = document.getElementById(screenName);
+italy:{
+title:"🇮🇹 Italia",
+items:["Serie A","Serie B"]
+},
 
-    if (selected) {
-      selected.classList.add("active");
-    }
+germany:{
+title:"🇩🇪 Alemania",
+items:["Bundesliga","2. Bundesliga"]
+},
 
-    document.getElementById("navHome").classList.remove("active");
-    document.getElementById("navMatches").classList.remove("active");
-    document.getElementById("navBets").classList.remove("active");
+france:{
+title:"🇫🇷 Francia",
+items:["Ligue 1","Ligue 2"]
+},
 
-    if (screenName === "home") {
-      document.getElementById("navHome").classList.add("active");
-    }
+nordic:{
+title:"🌍 Países nórdicos",
+items:[
+"🇸🇪 Allsvenskan",
+"🇳🇴 Eliteserien",
+"🇩🇰 Superliga",
+"🇫🇮 Veikkausliiga",
+"🇮🇸 Besta deild"
+]
 
-    if (screenName === "matches") {
-      document.getElementById("navMatches").classList.add("active");
-    }
+}
 
-    if (screenName === "bets") {
-      document.getElementById("navBets").classList.add("active");
-    }
-
-    window.scrollTo(0, 0);
-  }
-
-
-  function showMatch(team) {
-
-    if (team === "barcelona") {
-
-      document.getElementById("matchTitle").textContent =
-        "Barcelona vs Sevilla";
-
-      document.getElementById("matchLeague").textContent =
-        "La Liga · 20:00";
-
-      document.getElementById("xgHome").textContent = "1.90";
-      document.getElementById("xgAway").textContent = "0.90";
-
-      document.getElementById("pHome").textContent = "62%";
-      document.getElementById("pDraw").textContent = "21%";
-      document.getElementById("pAway").textContent = "17%";
-
-      document.getElementById("barHome").style.width = "62%";
-      document.getElementById("barDraw").style.width = "21%";
-      document.getElementById("barAway").style.width = "17%";
-
-    }
+};
 
 
-    if (team === "arsenal") {
+function showScreen(name){
 
-      document.getElementById("matchTitle").textContent =
-        "Arsenal vs Chelsea";
+var screens=document.querySelectorAll(".screen");
 
-      document.getElementById("matchLeague").textContent =
-        "Premier League · 20:30";
+screens.forEach(function(screen){
+screen.classList.remove("active");
+});
 
-      document.getElementById("xgHome").textContent = "1.50";
-      document.getElementById("xgAway").textContent = "1.20";
+var target=document.getElementById(name);
 
-      document.getElementById("pHome").textContent = "48%";
-      document.getElementById("pDraw").textContent = "27%";
-      document.getElementById("pAway").textContent = "25%";
+if(target){
+target.classList.add("active");
+}
 
-      document.getElementById("barHome").style.width = "48%";
-      document.getElementById("barDraw").style.width = "27%";
-      document.getElementById("barAway").style.width = "25%";
+document.getElementById("navHome").classList.remove("active");
+document.getElementById("navMatches").classList.remove("active");
+document.getElementById("navBets").classList.remove("active");
 
-    }
+if(name==="home"){
+document.getElementById("navHome").classList.add("active");
+}
+
+if(name==="countries" ||
+name==="leagues" ||
+name==="matches" ||
+name==="analysis"){
+
+document.getElementById("navMatches").classList.add("active");
+
+}
+
+if(name==="bets"){
+document.getElementById("navBets").classList.add("active");
+}
+
+window.scrollTo(0,0);
+
+}
 
 
-    if (team === "inter") {
+function showLeagues(country){
 
-      document.getElementById("matchTitle").textContent =
-        "Inter vs Roma";
+var data=leagues[country];
 
-      document.getElementById("matchLeague").textContent =
-        "Serie A · 21:00";
+if(!data){
+return;
+}
 
-      document.getElementById("xgHome").textContent = "1.70";
-      document.getElementById("xgAway").textContent = "1.00";
+document.getElementById("leagueTitle").textContent=data.title;
 
-      document.getElementById("pHome").textContent = "55%";
-      document.getElementById("pDraw").textContent = "25%";
-      document.getElementById("pAway").textContent = "20%";
+var list=document.getElementById("leagueList");
 
-      document.getElementById("barHome").style.width = "55%";
-      document.getElementById("barDraw").style.width = "25%";
-      document.getElementById("barAway").style.width = "20%";
+list.innerHTML="";
 
-    }
+data.items.forEach(function(item){
 
-    showScreen("detail");
-  }
+var div=document.createElement("div");
+
+div.className="league";
+
+div.innerHTML=
+'<div class="league-name">'+item+'</div>'+
+'<div class="league-info">Ver partidos y análisis →</div>';
+
+div.onclick=function(){
+
+showMatches(item);
+
+};
+
+list.appendChild(div);
+
+});
+
+showScreen("leagues");
+
+}
+
+
+function showChampions(){
+
+document.getElementById("leagueTitle").textContent=
+"🏆 Champions League";
+
+document.getElementById("leagueList").innerHTML=
+'<div class="league" onclick="showMatches(\'Champions League\')">'+
+'<div class="league-name">Champions League</div>'+
+'<div class="league-info">Ver partidos y análisis →</div>'+
+'</div>';
+
+showScreen("leagues");
+
+}
+
+
+function showMatches(league){
+
+document.getElementById("matchesTitle").textContent=league;
+
+showScreen("matches");
+
+}
+
+
+function showMatch(team){
+
+if(team==="barcelona"){
+
+document.getElementById("matchTitle").textContent=
+"Barcelona vs Sevilla";
+
+document.getElementById("matchInfo").textContent=
+"LaLiga · Hoy · 20:00";
+
+document.getElementById("xgHome").textContent="1.90";
+document.getElementById("xgAway").textContent="0.90";
+
+document.getElementById("pHome").textContent="62%";
+document.getElementById("pDraw").textContent="21%";
+document.getElementById("pAway").textContent="17%";
+
+document.getElementById("barHome").style.width="62%";
+document.getElementById("barDraw").style.width="21%";
+document.getElementById("barAway").style.width="17%";
+
+}
+
+
+if(team==="atletico"){
+
+document.getElementById("matchTitle").textContent=
+"Atlético de Madrid vs Villarreal";
+
+document.getElementById("matchInfo").textContent=
+"LaLiga · Hoy · 21:00";
+
+document.getElementById("xgHome").textContent="1.55";
+document.getElementById("xgAway").textContent="1.02";
+
+document.getElementById("pHome").textContent="51%";
+document.getElementById("pDraw").textContent="28%";
+document.getElementById("pAway").textContent="21%";
+
+document.getElementById("barHome").style.width="51%";
+document.getElementById("barDraw").style.width="28%";
+document.getElementById("barAway").style.width="21%";
+
+}
+
+
+if(team==="madrid"){
+
+document.getElementById("matchTitle").textContent=
+"Real Madrid vs Valencia";
+
+document.getElementById("matchInfo").textContent=
+"LaLiga · Mañana · 21:00";
+
+document.getElementById("xgHome").textContent="2.05";
+document.getElementById("xgAway").textContent="0.82";
+
+document.getElementById("pHome").textContent="68%";
+document.getElementById("pDraw").textContent="19%";
+document.getElementById("pAway").textContent="13%";
+
+document.getElementById("barHome").style.width="68%";
+document.getElementById("barDraw").style.width="19%";
+document.getElementById("barAway").style.width="13%";
+
+}
+
+showScreen("analysis");
+
+}
 
 </script>
 
