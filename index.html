@@ -614,7 +614,7 @@ async function openRealMatches(){
     const today=getToday();
 
     const response=await fetch(
-  "/api/fixtures?date="+encodeURIComponent(today)
+  "https://betai-bice.vercel.app/api/fixtures?date="+encodeURIComponent(today)
 );
 
     if(!response.ok){
