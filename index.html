@@ -1,143 +1,627 @@
-export default async function handler(req, res) {
-  try {
-    const API_KEY = process.env.API_FOOTBALL_KEY;
-    if (!API_KEY) {
-      return res.status(500).json({
-        error: "No existe API_FOOTBALL_KEY en las variables de Vercel"
-      });
-    }
-    // Fecha solicitada desde BetAI.
-    // Si no se proporciona, usamos la fecha actual en España.
-    const requestedDate = req.query.date;
-    let date = requestedDate;
-    if (!date) {
-      const now = new Date();
-      date = new Intl.DateTimeFormat("en-CA", {
-        timeZone: "Europe/Madrid"
-      }).format(now);
-    }
-    /*
-      Competiciones que queremos en BetAI.
-      Los IDs son los de API-Football.
-    */
-    const leagues = [
-      // España
-      { id: 140, name: "LaLiga", country: "España", flag: "🇪🇸" },
-      { id: 141, name: "Segunda División", country: "España", flag: "🇪🇸" },
-      // Inglaterra
-      { id: 39, name: "Premier League", country: "Inglaterra", flag: "🏴" },
-      { id: 40, name: "Championship", country: "Inglaterra", flag: "🏴" },
-      // Italia
-      { id: 135, name: "Serie A", country: "Italia", flag: "🇮🇹" },
-      { id: 136, name: "Serie B", country: "Italia", flag: "🇮🇹" },
-      // Alemania
-      { id: 78, name: "Bundesliga", country: "Alemania", flag: "🇩🇪" },
-      { id: 79, name: "2. Bundesliga", country: "Alemania", flag: "🇩🇪" },
-      // Francia
-      { id: 61, name: "Ligue 1", country: "Francia", flag: "🇫🇷" },
-      { id: 62, name: "Ligue 2", country: "Francia", flag: "🇫🇷" },
-      // Escandinavia
-      { id: 113, name: "Allsvenskan", country: "Suecia", flag: "🇸🇪" },
-      { id: 103, name: "Eliteserien", country: "Noruega", flag: "🇳🇴" },
-      { id: 119, name: "Superliga", country: "Dinamarca", flag: "🇩🇰" },
-      { id: 244, name: "Veikkausliiga", country: "Finlandia", flag: "🇫🇮" },
-      { id: 166, name: "Besta deild", country: "Islandia", flag: "🇮🇸" },
-      // Europa
-      { id: 2, name: "Champions League", country: "Europa", flag: "🏆" }
-    ];
-    /*
-      Consultamos las competiciones en paralelo.
-      Promise.allSettled permite que una liga con problemas
-      no bloquee todas las demás.
-    */
-    const requests = leagues.map(async (league) => {
-      const url =
-        "https://v3.football.api-sports.io/fixtures" +
-        "?league=" + league.id +
-        "&date=" + encodeURIComponent(date) +
-        "&timezone=Europe/Madrid";
-      const response = await fetch(url, {
-        headers: {
-          "x-apisports-key": API_KEY
-        }
-      });
-      const data = await response.json();
-      return {
-        league,
-        http: response.status,
-        data
-      };
-    });
-    const results = await Promise.allSettled(requests);
-    const partidos = [];
-    const errores = [];
-    results.forEach((result) => {
-      if (result.status === "rejected") {
-        errores.push({
-          error: result.reason?.message || "Error desconocido"
-        });
-        return;
-      }
-      const item = result.value;
-      const league = item.league;
-      const data = item.data;
-      if (item.http !== 200) {
-        errores.push({
-          liga: league.name,
-          http: item.http,
-          error: data?.errors || {}
-        });
-        return;
-      }
-      if (data?.errors && Object.keys(data.errors).length > 0) {
-        errores.push({
-          liga: league.name,
-          error: data.errors
-        });
-      }
-      /*
-        Convertimos la respuesta de API-Football
-        a un formato sencillo para BetAI.
-      */
-      (data.response || []).forEach((fixture) => {
-        partidos.push({
-          id: fixture.fixture.id,
-          fecha: fixture.fixture.date,
-          estado: fixture.fixture.status.short,
-          estadoLargo: fixture.fixture.status.long,
-          minuto: fixture.fixture.status.elapsed,
-          local: fixture.teams.home.name,
-          visitante: fixture.teams.away.name,
-          logoLocal: fixture.teams.home.logo,
-          logoVisitante: fixture.teams.away.logo,
-          golesLocal: fixture.goals.home,
-          golesVisitante: fixture.goals.away,
-          liga: league.name,
-          ligaId: league.id,
-          pais: league.country,
-          bandera: league.flag,
-          ronda: fixture.league.round,
-          temporada: fixture.league.season
-        });
-      });
-    });
-    /*
-      Ordenamos cronológicamente.
-    */
-    partidos.sort((a, b) => {
-      return new Date(a.fecha) - new Date(b.fecha);
-    });
-    return res.status(200).json({
-      fecha: date,
-      total: partidos.length,
-      competiciones: leagues,
-      errores,
-      partidos
-    });
-  } catch (error) {
-    return res.status(500).json({
-      error: "Error interno del servidor",
-      detalle: error.message
-    });
-  }
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#080c16">
+<title>BetAI</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+margin:0;
+background:#080c16;
+color:#f5f7fb;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif
 }
+button{font:inherit;cursor:pointer}
+.app{
+max-width:720px;
+margin:auto;
+min-height:100vh;
+padding-bottom:95px
+}
+.header{
+padding:22px 18px 12px;
+display:flex;
+justify-content:space-between;
+align-items:center
+}
+.logo{font-size:28px;font-weight:800}
+.logo span{color:#6ee7b7}
+.subtitle{
+color:#94a3b8;
+font-size:12px;
+margin-top:3px
+}
+.demo{
+background:#15352c;
+color:#6ee7b7;
+border-radius:20px;
+padding:7px 10px;
+font-size:11px;
+font-weight:700
+}
+.content{padding:10px 18px}
+h1{
+font-size:26px;
+margin:12px 0 5px
+}
+.intro{
+color:#94a3b8;
+margin:0 0 18px;
+font-size:14px
+}
+.card{
+background:#111827;
+border:1px solid #253047;
+border-radius:18px;
+padding:16px;
+margin-bottom:12px
+}
+.section{
+font-size:17px;
+font-weight:750;
+margin:18px 0 10px
+}
+.tabs{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:7px;
+margin-bottom:14px
+}
+.tab{
+border:1px solid #253047;
+background:#111827;
+color:#cbd5e1;
+border-radius:12px;
+padding:10px 5px;
+font-size:12px;
+font-weight:700
+}
+.tab.active{
+background:#6ee7b7;
+color:#062017;
+border-color:#6ee7b7
+}
+.filters{
+display:flex;
+gap:8px;
+overflow-x:auto;
+padding-bottom:8px;
+margin-bottom:8px
+}
+.filter{
+white-space:nowrap;
+border:1px solid #253047;
+background:#111827;
+color:#cbd5e1;
+border-radius:20px;
+padding:8px 12px;
+font-size:12px
+}
+.filter.active{
+background:#6ee7b7;
+color:#062017;
+border-color:#6ee7b7;
+font-weight:800
+}
+.match{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:12px
+}
+.teams{
+font-size:14px;
+font-weight:700;
+line-height:1.8
+}
+.team-line{
+display:flex;
+align-items:center;
+gap:7px
+}
+.logo-team{
+width:27px;
+height:27px;
+object-fit:contain
+}
+.time{
+color:#94a3b8;
+font-size:12px;
+text-align:right;
+white-space:nowrap
+}
+.analyse{
+margin-top:7px;
+border:0;
+background:#6ee7b7;
+color:#062017;
+font-weight:800;
+border-radius:10px;
+padding:8px 10px
+}
+.league-title{
+font-size:13px;
+font-weight:800;
+color:#6ee7b7;
+margin:18px 0 8px
+}
+.status{
+font-size:10px;
+color:#94a3b8;
+margin-top:2px
+}
+.loading{
+text-align:center;
+padding:35px 10px;
+color:#94a3b8
+}
+.error{
+color:#fca5a5;
+line-height:1.5
+}
+.note{
+color:#94a3b8;
+font-size:12px;
+line-height:1.5
+}
+.back{
+border:0;
+background:#172033;
+color:#fff;
+border-radius:10px;
+padding:9px 12px;
+margin-bottom:10px
+}
+.screen{display:none}
+.screen.active{display:block}
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px
+}
+.label{
+color:#94a3b8;
+font-size:12px
+}
+.number{
+font-size:23px;
+font-weight:800;
+margin-top:7px
+}
+.bottom{
+position:fixed;
+left:0;
+right:0;
+bottom:0;
+background:rgba(8,12,22,.97);
+border-top:1px solid #253047;
+z-index:10
+}
+.bottom-inner{
+max-width:720px;
+margin:auto;
+display:grid;
+grid-template-columns:repeat(3,1fr);
+padding:8px 10px calc(8px + env(safe-area-inset-bottom))
+}
+.nav-button{
+background:none;
+border:0;
+color:#718096;
+padding:8px 4px;
+font-size:11px
+}
+.nav-button.active{
+color:#6ee7b7;
+font-weight:800
+}
+.nav-icon{
+display:block;
+font-size:19px;
+margin-bottom:3px
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="header">
+<div>
+<div class="logo">Bet<span>AI</span></div>
+<div class="subtitle">Análisis inteligente de fútbol</div>
+</div>
+<div class="demo">LIVE DATA</div>
+</header>
+<!-- INICIO -->
+<section id="home" class="screen active">
+<div class="content">
+<h1>Panel principal</h1>
+<p class="intro">
+Tu centro personal de análisis de fútbol.
+</p>
+<div class="card">
+<strong>⚽ Partidos reales</strong>
+<p class="note">
+Consulta partidos de las competiciones seleccionadas.
+</p>
+<button class="analyse" onclick="openMatches()">
+Ver partidos
+</button>
+</div>
+<div class="grid">
+<div class="card">
+<div class="label">Competiciones</div>
+<div class="number">16</div>
+</div>
+<div class="card">
+<div class="label">Datos</div>
+<div class="number">LIVE</div>
+</div>
+</div>
+</div>
+</section>
+<!-- PARTIDOS -->
+<section id="matches" class="screen">
+<div class="content">
+<h1>Partidos</h1>
+<p class="intro" id="dateText">
+Partidos reales de BetAI
+</p>
+<!-- HOY / JORNADA / CALENDARIO -->
+<div class="tabs">
+<button id="tabToday"
+class="tab active"
+onclick="changeMode('today')">
+📅 Hoy
+</button>
+<button id="tabRound"
+class="tab"
+onclick="changeMode('round')">
+🏆 Jornada
+</button>
+<button id="tabCalendar"
+class="tab"
+onclick="changeMode('calendar')">
+📋 Calendario
+</button>
+</div>
+<div class="filters" id="filters"></div>
+<div id="matchesContainer">
+<div class="loading">
+Cargando partidos...
+</div>
+</div>
+</div>
+</section>
+<!-- ANÁLISIS -->
+<section id="analysis" class="screen">
+<div class="content">
+<button class="back" onclick="showScreen('matches')">
+← Volver
+</button>
+<h1 id="matchTitle">Partido</h1>
+<p class="intro" id="matchInfo"></p>
+<div class="card">
+<div class="section">Partido</div>
+<div class="grid">
+<div>
+<div class="label">Local</div>
+<div class="number" id="homeTeam">-</div>
+</div>
+<div>
+<div class="label">Visitante</div>
+<div class="number" id="awayTeam">-</div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="section">Modelo BetAI</div>
+<p class="note">
+Esta parte será nuestro modelo estadístico. Primero utilizaremos
+datos reales de forma, goles, local/visitante, xG y otros factores.
+</p>
+</div>
+<div class="card">
+<div class="section">Próximamente</div>
+<p class="note">
+📊 Forma reciente<br>
+⚽ Goles<br>
+📈 xG<br>
+🏠 Local / visitante<br>
+🤝 H2H<br>
+🧮 Simulación<br>
+📊 Probabilidades del modelo
+</p>
+</div>
+</div>
+</section>
+<!-- APUESTAS -->
+<section id="bets" class="screen">
+<div class="content">
+<h1>Mis apuestas</h1>
+<p class="intro">
+Seguimiento personal.
+</p>
+<div class="card">
+<div class="section">
+Próximamente
+</div>
+<p class="note">
+Aquí podremos guardar tus apuestas, cuotas,
+resultados y estadísticas históricas.
+</p>
+</div>
+</div>
+</section>
+<!-- NAVEGACIÓN -->
+<nav class="bottom">
+<div class="bottom-inner">
+<button id="navHome"
+class="nav-button active"
+onclick="showScreen('home')">
+<span class="nav-icon">⌂</span>
+Inicio
+</button>
+<button id="navMatches"
+class="nav-button"
+onclick="openMatches()">
+<span class="nav-icon">⚽</span>
+Partidos
+</button>
+<button id="navBets"
+class="nav-button"
+onclick="showScreen('bets')">
+<span class="nav-icon">▣</span>
+Mis apuestas
+</button>
+</div>
+</nav>
+</div>
+<script>
+let allMatches=[];
+let selectedLeague="Todas";
+let currentMode="today";
+/* NAVEGACIÓN */
+function showScreen(name){
+document.querySelectorAll(".screen").forEach(function(screen){
+screen.classList.remove("active");
+});
+document.getElementById(name).classList.add("active");
+document.getElementById("navHome").classList.remove("active");
+document.getElementById("navMatches").classList.remove("active");
+document.getElementById("navBets").classList.remove("active");
+if(name==="home"){
+document.getElementById("navHome").classList.add("active");
+}
+if(name==="matches" || name==="analysis"){
+document.getElementById("navMatches").classList.add("active");
+}
+if(name==="bets"){
+document.getElementById("navBets").classList.add("active");
+}
+window.scrollTo(0,0);
+}
+/* FECHA LOCAL */
+function getToday(){
+const now=new Date();
+return new Intl.DateTimeFormat("en-CA",{
+timeZone:"Europe/Madrid"
+}).format(now);
+}
+/* FORMATO HORA */
+function formatTime(dateString){
+return new Date(dateString).toLocaleTimeString("es-ES",{
+hour:"2-digit",
+minute:"2-digit",
+timeZone:"Europe/Madrid"
+});
+}
+/* ABRIR PARTIDOS */
+function openMatches(){
+showScreen("matches");
+changeMode(currentMode);
+}
+/* CAMBIAR MODO */
+function changeMode(mode){
+currentMode=mode;
+document.querySelectorAll(".tab").forEach(function(tab){
+tab.classList.remove("active");
+});
+if(mode==="today"){
+document.getElementById("tabToday").classList.add("active");
+}
+if(mode==="round"){
+document.getElementById("tabRound").classList.add("active");
+}
+if(mode==="calendar"){
+document.getElementById("tabCalendar").classList.add("active");
+}
+loadMatches();
+}
+/* CARGAR PARTIDOS */
+async function loadMatches(){
+const container=document.getElementById("matchesContainer");
+container.innerHTML=
+'<div class="loading">⚽ Cargando partidos reales...</div>';
+try{
+const today=getToday();
+const response=await fetch(
+"https://betai-bice.vercel.app/api/fixtures?date="+
+encodeURIComponent(today)
+);
+if(!response.ok){
+throw new Error("HTTP "+response.status);
+}
+const data=await response.json();
+allMatches=data.partidos || [];
+/*
+  Para "Hoy" utilizamos directamente los partidos
+  de la fecha consultada.
+*/
+if(currentMode==="today"){
+document.getElementById("dateText").textContent=
+"Partidos de hoy · "+today;
+}
+/*
+  "Jornada" y "Calendario" utilizan los mismos
+  datos disponibles actualmente, pero los agrupamos
+  de manera diferente.
+  En el siguiente paso conectaremos estos modos
+  directamente al endpoint de jornadas/calendario.
+*/
+if(currentMode==="round"){
+document.getElementById("dateText").textContent=
+"Partidos agrupados por jornada";
+}
+if(currentMode==="calendar"){
+document.getElementById("dateText").textContent=
+"Calendario disponible";
+}
+createFilters();
+renderMatches();
+}catch(error){
+container.innerHTML=
+'<div class="card error">'+
+"<strong>Error al cargar los partidos</strong>"+
+"<p>"+error.message+"</p>"+
+"</div>";
+}
+}
+/* FILTROS */
+function createFilters(){
+const filters=document.getElementById("filters");
+const leagues=[
+"Todas",
+...new Set(
+allMatches.map(function(match){
+return match.liga;
+})
+)
+];
+filters.innerHTML="";
+leagues.forEach(function(league){
+const button=document.createElement("button");
+button.className=
+"filter "+(league==="Todas" ? "active":"");
+button.textContent=league;
+button.onclick=function(){
+selectedLeague=league;
+document.querySelectorAll(".filter").forEach(function(item){
+item.classList.remove("active");
+});
+button.classList.add("active");
+renderMatches();
+};
+filters.appendChild(button);
+});
+}
+/* MOSTRAR PARTIDOS */
+function renderMatches(){
+const container=document.getElementById("matchesContainer");
+let matches=allMatches;
+if(selectedLeague!=="Todas"){
+matches=matches.filter(function(match){
+return match.liga===selectedLeague;
+});
+}
+if(matches.length===0){
+container.innerHTML=
+'<div class="card">'+
+'<div class="loading">'+
+'No hay partidos disponibles para esta selección.'+
+'</div>'+
+'</div>';
+return;
+}
+container.innerHTML="";
+let currentLeague="";
+matches.forEach(function(match){
+if(match.liga!==currentLeague){
+currentLeague=match.liga;
+const title=document.createElement("div");
+title.className="league-title";
+title.textContent=
+(match.bandera || "⚽")+" "+match.liga;
+container.appendChild(title);
+}
+const card=document.createElement("div");
+card.className="card";
+card.innerHTML=
+'<div class="match">'+
+'<div class="teams">'+
+'<div class="team-line">'+
+(
+match.logoLocal
+?
+'<img class="logo-team" src="'+
+escapeAttribute(match.logoLocal)+
+'">'
+:""
+)+
+'<span>'+
+escapeHTML(match.local)+
+'</span>'+
+'</div>'+
+'<div class="team-line">'+
+(
+match.logoVisitante
+?
+'<img class="logo-team" src="'+
+escapeAttribute(match.logoVisitante)+
+'">'
+:""
+)+
+'<span>'+
+escapeHTML(match.visitante)+
+'</span>'+
+'</div>'+
+'<div class="status">'+
+escapeHTML(match.estadoLargo || match.estado || "")+
+'</div>'+
+'</div>'+
+'<div class="time">'+
+formatTime(match.fecha)+
+'<br>'+
+'<button class="analyse">
+Analizar
+</button>'+
+'</div>'+
+'</div>';
+card.querySelector(".analyse").onclick=function(){
+openMatch(match);
+};
+container.appendChild(card);
+});
+}
+/* ABRIR ANÁLISIS */
+function openMatch(match){
+document.getElementById("matchTitle").textContent=
+match.local+" vs "+match.visitante;
+document.getElementById("matchInfo").textContent=
+match.liga+
+" · "+
+formatTime(match.fecha);
+document.getElementById("homeTeam").textContent=
+match.local;
+document.getElementById("awayTeam").textContent=
+match.visitante;
+showScreen("analysis");
+}
+/* SEGURIDAD */
+function escapeHTML(value){
+return String(value || "")
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+}
+function escapeAttribute(value){
+return String(value || "")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+}
+</script>
+</body>
+</html>
