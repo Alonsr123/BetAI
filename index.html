@@ -484,21 +484,29 @@ matchesContainer.innerHTML =
 const today = getToday();
 document.getElementById("dateText").textContent =
 "Partidos de hoy · " + today;
-try{
 const response = await fetch(
-"https://betai-bice.vercel.app/api/fixtures?date=" +
-encodeURIComponent(today)
+  "https://betai-bice.vercel.app/api/fixtures?date=" +
+  encodeURIComponent(today),
+  {
+    method: "GET",
+    headers: {
+      "Accept": "application/json"
+    },
+    cache: "no-store"
+  }
 );
-if(!response.ok){
-throw new Error(
-"Error HTTP " + response.status
-);
+
+if (!response.ok) {
+  throw new Error("HTTP " + response.status);
 }
+
 const data = await response.json();
-allMatches =
-Array.isArray(data.partidos)
-? data.partidos
-: [];
+
+console.log("Respuesta BetAI:", data);
+
+allMatches = Array.isArray(data.partidos)
+  ? data.partidos
+  : [];
 selectedLeague = "Todas";
 createFilters();
 renderMatches();
