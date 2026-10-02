@@ -2,392 +2,419 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#080c16">
 <title>BetAI</title>
 <style>
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{
-margin:0;
-background:#080c16;
-color:#f5f7fb;
-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+html,body{
+  margin:0;
+  padding:0;
+  background:#080c16;
+  color:#f5f7fb;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
 }
 button{
-font:inherit;
-cursor:pointer
+  font:inherit;
+  cursor:pointer;
+  -webkit-appearance:none;
+  appearance:none;
 }
 .app{
-max-width:720px;
-margin:auto;
-min-height:100vh;
-padding-bottom:95px
+  width:100%;
+  max-width:720px;
+  min-height:100vh;
+  margin:0 auto;
+  padding-bottom:100px;
 }
 .header{
-padding:22px 18px 12px;
-display:flex;
-justify-content:space-between;
-align-items:center
+  padding:22px 18px 14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
 .logo{
-font-size:28px;
-font-weight:800
+  font-size:28px;
+  font-weight:800;
 }
 .logo span{
-color:#6ee7b7
+  color:#6ee7b7;
 }
 .subtitle{
-color:#94a3b8;
-font-size:12px;
-margin-top:3px
+  color:#94a3b8;
+  font-size:12px;
+  margin-top:3px;
 }
 .demo{
-background:#15352c;
-color:#6ee7b7;
-border-radius:20px;
-padding:7px 10px;
-font-size:11px;
-font-weight:700
+  background:#15352c;
+  color:#6ee7b7;
+  border-radius:20px;
+  padding:7px 10px;
+  font-size:11px;
+  font-weight:700;
 }
 .content{
-padding:10px 18px
-}
-h1{
-font-size:26px;
-margin:12px 0 5px
-}
-.intro{
-color:#94a3b8;
-margin:0 0 18px;
-font-size:14px
-}
-.card{
-background:#111827;
-border:1px solid #253047;
-border-radius:18px;
-padding:16px;
-margin-bottom:12px
-}
-.section{
-font-size:17px;
-font-weight:750;
-margin:18px 0 10px
-}
-.filters{
-display:flex;
-gap:8px;
-overflow-x:auto;
-padding-bottom:8px;
-margin-bottom:8px
-}
-.filter{
-white-space:nowrap;
-border:1px solid #253047;
-background:#111827;
-color:#cbd5e1;
-border-radius:20px;
-padding:8px 12px;
-font-size:12px
-}
-.filter.active{
-background:#6ee7b7;
-color:#062017;
-border-color:#6ee7b7;
-font-weight:800
-}
-.match{
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:12px
-}
-.teams{
-font-size:14px;
-font-weight:700;
-line-height:1.8
-}
-.team-line{
-display:flex;
-align-items:center;
-gap:7px
-}
-.logo-team{
-width:27px;
-height:27px;
-object-fit:contain
-}
-.time{
-color:#94a3b8;
-font-size:12px;
-text-align:right;
-white-space:nowrap
-}
-.analyse{
-margin-top:7px;
-border:0;
-background:#6ee7b7;
-color:#062017;
-font-weight:800;
-border-radius:10px;
-padding:8px 10px
-}
-.league-title{
-font-size:13px;
-font-weight:800;
-color:#6ee7b7;
-margin:18px 0 8px
-}
-.status{
-font-size:10px;
-color:#94a3b8;
-margin-top:2px
-}
-.loading{
-text-align:center;
-padding:35px 10px;
-color:#94a3b8
-}
-.error{
-color:#fca5a5;
-line-height:1.5
-}
-.note{
-color:#94a3b8;
-font-size:12px;
-line-height:1.5
-}
-.back{
-border:0;
-background:#172033;
-color:#fff;
-border-radius:10px;
-padding:9px 12px;
-margin-bottom:10px
+  padding:10px 18px;
 }
 .screen{
-display:none
+  display:none;
 }
 .screen.active{
-display:block
+  display:block;
+}
+h1{
+  font-size:26px;
+  margin:12px 0 6px;
+}
+.intro{
+  color:#94a3b8;
+  margin:0 0 18px;
+  font-size:14px;
+}
+.card{
+  background:#111827;
+  border:1px solid #253047;
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:12px;
+}
+.note{
+  color:#94a3b8;
+  font-size:12px;
+  line-height:1.55;
+}
+.section{
+  font-size:17px;
+  font-weight:750;
+  margin-bottom:12px;
 }
 .grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:12px
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
 }
 .label{
-color:#94a3b8;
-font-size:12px
+  color:#94a3b8;
+  font-size:12px;
 }
 .number{
-font-size:23px;
-font-weight:800;
-margin-top:7px
+  font-size:22px;
+  font-weight:800;
+  margin-top:7px;
+}
+.primary-button{
+  display:block;
+  width:100%;
+  border:0;
+  background:#6ee7b7;
+  color:#062017;
+  font-weight:800;
+  border-radius:12px;
+  padding:12px 14px;
+  margin-top:14px;
+}
+.secondary-button{
+  border:0;
+  background:#172033;
+  color:#fff;
+  border-radius:10px;
+  padding:10px 13px;
+}
+.filters{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding:2px 0 10px;
+  margin-bottom:5px;
+}
+.filter{
+  flex:0 0 auto;
+  border:1px solid #253047;
+  background:#111827;
+  color:#cbd5e1;
+  border-radius:20px;
+  padding:8px 13px;
+  font-size:12px;
+}
+.filter.active{
+  background:#6ee7b7;
+  color:#062017;
+  border-color:#6ee7b7;
+  font-weight:800;
+}
+.league-title{
+  color:#6ee7b7;
+  font-size:13px;
+  font-weight:800;
+  margin:18px 0 8px;
+}
+.match{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+.teams{
+  min-width:0;
+  flex:1;
+  font-size:14px;
+  font-weight:700;
+  line-height:1.7;
+}
+.team-line{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  min-width:0;
+}
+.team-name{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.logo-team{
+  width:28px;
+  height:28px;
+  object-fit:contain;
+  flex:0 0 28px;
+}
+.status{
+  color:#94a3b8;
+  font-size:10px;
+  margin-top:4px;
+}
+.time{
+  flex:0 0 auto;
+  color:#94a3b8;
+  font-size:12px;
+  text-align:right;
+}
+.analyse{
+  border:0;
+  background:#6ee7b7;
+  color:#062017;
+  font-weight:800;
+  border-radius:9px;
+  padding:8px 10px;
+  margin-top:7px;
+}
+.loading{
+  text-align:center;
+  padding:35px 10px;
+  color:#94a3b8;
+}
+.error{
+  color:#fca5a5;
+  line-height:1.5;
+}
+.error strong{
+  color:#fecaca;
+}
+.back{
+  border:0;
+  background:#172033;
+  color:#fff;
+  border-radius:10px;
+  padding:9px 12px;
+  margin-bottom:8px;
 }
 .bottom{
-position:fixed;
-left:0;
-right:0;
-bottom:0;
-background:rgba(8,12,22,.97);
-border-top:1px solid #253047;
-z-index:10
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  background:rgba(8,12,22,.98);
+  border-top:1px solid #253047;
+  z-index:100;
 }
 .bottom-inner{
-max-width:720px;
-margin:auto;
-display:grid;
-grid-template-columns:repeat(3,1fr);
-padding:8px 10px calc(8px + env(safe-area-inset-bottom))
+  width:100%;
+  max-width:720px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  padding:8px 10px calc(8px + env(safe-area-inset-bottom));
 }
 .nav-button{
-background:none;
-border:0;
-color:#718096;
-padding:8px 4px;
-font-size:11px
+  border:0;
+  background:transparent;
+  color:#718096;
+  padding:8px 4px;
+  font-size:11px;
 }
 .nav-button.active{
-color:#6ee7b7;
-font-weight:800
+  color:#6ee7b7;
+  font-weight:800;
 }
 .nav-icon{
-display:block;
-font-size:19px;
-margin-bottom:3px
+  display:block;
+  font-size:19px;
+  margin-bottom:3px;
 }
 </style>
 </head>
 <body>
 <div class="app">
 <header class="header">
-<div>
-<div class="logo">Bet<span>AI</span></div>
-<div class="subtitle">Análisis inteligente de fútbol</div>
-</div>
-<div class="demo">LIVE DATA</div>
+  <div>
+    <div class="logo">Bet<span>AI</span></div>
+    <div class="subtitle">Análisis inteligente de fútbol</div>
+  </div>
+  <div class="demo">LIVE DATA</div>
 </header>
-<!-- INICIO -->
-<section id="home" class="screen active">
-<div class="content">
-<h1>Panel principal</h1>
-<p class="intro">
-Tu centro personal de análisis de fútbol.
-</p>
-<div class="card">
-<strong>⚽ Partidos reales</strong>
-<p class="note">
-Consulta los partidos reales de nuestras competiciones.
-</p>
-<button class="analyse" id="homeMatchesButton">
-Ver partidos
-</button>
-</div>
-<div class="grid">
-<div class="card">
-<div class="label">
-Competiciones
-</div>
-<div class="number">
-16
-</div>
-</div>
-<div class="card">
-<div class="label">
-Datos
-</div>
-<div class="number">
-LIVE
-</div>
-</div>
-</div>
-</div>
+<!-- ==================== INICIO ==================== -->
+<section id="homeScreen" class="screen active">
+  <div class="content">
+    <h1>Panel principal</h1>
+    <p class="intro">
+      Tu centro personal de análisis de fútbol.
+    </p>
+    <div class="card">
+      <strong>⚽ Partidos reales</strong>
+      <p class="note">
+        Consulta los partidos reales de las competiciones seleccionadas.
+      </p>
+      <button
+        id="openMatchesHome"
+        class="primary-button"
+        type="button">
+        Ver partidos
+      </button>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="label">Competiciones</div>
+        <div class="number">16</div>
+      </div>
+      <div class="card">
+        <div class="label">Datos</div>
+        <div class="number">LIVE</div>
+      </div>
+    </div>
+  </div>
 </section>
-<!-- PARTIDOS -->
-<section id="matches" class="screen">
-<div class="content">
-<h1>Partidos</h1>
-<p class="intro" id="dateText">
-Partidos reales de BetAI
-</p>
-<div class="filters" id="filters"></div>
-<div id="matchesContainer">
-<div class="loading">
-Pulsa "Partidos" para cargar los encuentros.
-</div>
-</div>
-</div>
+<!-- ==================== PARTIDOS ==================== -->
+<section id="matchesScreen" class="screen">
+  <div class="content">
+    <h1>Partidos</h1>
+    <p id="dateText" class="intro">
+      Partidos reales de BetAI
+    </p>
+    <div id="leagueFilters" class="filters"></div>
+    <div id="matchesContainer">
+      <div class="loading">
+        Pulsa Partidos para cargar los encuentros.
+      </div>
+    </div>
+  </div>
 </section>
-<!-- ANÁLISIS -->
-<section id="analysis" class="screen">
-<div class="content">
-<button class="back" id="backMatchesButton">
-← Volver a partidos
-</button>
-<h1 id="matchTitle">
-Partido
-</h1>
-<p class="intro" id="matchInfo"></p>
-<div class="card">
-<div class="section">
-Partido
-</div>
-<div class="grid">
-<div>
-<div class="label">
-Local
-</div>
-<div class="number" id="homeTeam">
--
-</div>
-</div>
-<div>
-<div class="label">
-Visitante
-</div>
-<div class="number" id="awayTeam">
--
-</div>
-</div>
-</div>
-</div>
-<div class="card">
-<div class="section">
-Modelo BetAI
-</div>
-<p class="note">
-Esta parte será nuestro modelo estadístico. Primero utilizaremos datos reales de forma, goles, local/visitante, xG y otros factores.
-</p>
-</div>
-<div class="card">
-<div class="section">
-Próximamente
-</div>
-<p class="note">
-📊 Forma reciente<br>
-⚽ Goles<br>
-📈 xG<br>
-🏠 Local / visitante<br>
-🤝 H2H<br>
-🧮 Simulación<br>
-📊 Probabilidades del modelo
-</p>
-</div>
-</div>
+<!-- ==================== ANÁLISIS ==================== -->
+<section id="analysisScreen" class="screen">
+  <div class="content">
+    <button
+      id="backToMatches"
+      class="back"
+      type="button">
+      ← Volver a partidos
+    </button>
+    <h1 id="analysisTitle">
+      Partido
+    </h1>
+    <p id="analysisInfo" class="intro"></p>
+    <div class="card">
+      <div class="section">
+        Partido
+      </div>
+      <div class="grid">
+        <div>
+          <div class="label">Local</div>
+          <div id="analysisHome" class="number">-</div>
+        </div>
+        <div>
+          <div class="label">Visitante</div>
+          <div id="analysisAway" class="number">-</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section">
+        Modelo BetAI
+      </div>
+      <p class="note">
+        Aquí construiremos el análisis estadístico utilizando
+        forma reciente, goles, local/visitante, xG, enfrentamientos
+        directos y otros datos.
+      </p>
+    </div>
+    <div class="card">
+      <div class="section">
+        Próximamente
+      </div>
+      <p class="note">
+        📊 Forma reciente<br>
+        ⚽ Goles<br>
+        📈 xG<br>
+        🏠 Local / visitante<br>
+        🤝 H2H<br>
+        🧮 Simulación<br>
+        📊 Probabilidades del modelo
+      </p>
+    </div>
+  </div>
 </section>
-<!-- APUESTAS -->
-<section id="bets" class="screen">
-<div class="content">
-<h1>
-Mis apuestas
-</h1>
-<p class="intro">
-Seguimiento personal.
-</p>
-<div class="card">
-<div class="section">
-Próximamente
-</div>
-<p class="note">
-Aquí podremos guardar tus apuestas, cuotas, resultados y estadísticas históricas.
-</p>
-</div>
-</div>
+<!-- ==================== APUESTAS ==================== -->
+<section id="betsScreen" class="screen">
+  <div class="content">
+    <h1>Mis apuestas</h1>
+    <p class="intro">
+      Seguimiento personal.
+    </p>
+    <div class="card">
+      <div class="section">
+        Próximamente
+      </div>
+      <p class="note">
+        Aquí podremos guardar tus apuestas, cuotas,
+        resultados y estadísticas históricas.
+      </p>
+    </div>
+  </div>
 </section>
-<!-- NAVEGACIÓN -->
+<!-- ==================== NAVEGACIÓN ==================== -->
 <nav class="bottom">
-<div class="bottom-inner">
-<button
-id="navHome"
-class="nav-button active"
-type="button">
-<span class="nav-icon">
-⌂
-</span>
-Inicio
-</button>
-<button
-id="navMatches"
-class="nav-button"
-type="button">
-<span class="nav-icon">
-⚽
-</span>
-Partidos
-</button>
-<button
-id="navBets"
-class="nav-button"
-type="button">
-<span class="nav-icon">
-▣
-</span>
-Mis apuestas
-</button>
-</div>
+  <div class="bottom-inner">
+    <button
+      id="navHome"
+      class="nav-button active"
+      type="button">
+      <span class="nav-icon">⌂</span>
+      Inicio
+    </button>
+    <button
+      id="navMatches"
+      class="nav-button"
+      type="button">
+      <span class="nav-icon">⚽</span>
+      Partidos
+    </button>
+    <button
+      id="navBets"
+      class="nav-button"
+      type="button">
+      <span class="nav-icon">▣</span>
+      Mis apuestas
+    </button>
+  </div>
 </nav>
 </div>
 <script>
+/* =========================================================
+   BETAI
+   Navegación + partidos reales
+========================================================= */
 /* =========================
    VARIABLES
 ========================= */
@@ -397,365 +424,462 @@ let selectedLeague = "Todas";
    ELEMENTOS
 ========================= */
 const homeScreen =
-document.getElementById("home");
+  document.getElementById("homeScreen");
 const matchesScreen =
-document.getElementById("matches");
+  document.getElementById("matchesScreen");
 const analysisScreen =
-document.getElementById("analysis");
+  document.getElementById("analysisScreen");
 const betsScreen =
-document.getElementById("bets");
+  document.getElementById("betsScreen");
 const navHome =
-document.getElementById("navHome");
+  document.getElementById("navHome");
 const navMatches =
-document.getElementById("navMatches");
+  document.getElementById("navMatches");
 const navBets =
-document.getElementById("navBets");
+  document.getElementById("navBets");
 const matchesContainer =
-document.getElementById("matchesContainer");
-const filters =
-document.getElementById("filters");
+  document.getElementById("matchesContainer");
+const leagueFilters =
+  document.getElementById("leagueFilters");
+const dateText =
+  document.getElementById("dateText");
 /* =========================
-   NAVEGACIÓN
+   CAMBIAR PANTALLA
 ========================= */
-function showScreen(screen){
-homeScreen.classList.remove("active");
-matchesScreen.classList.remove("active");
-analysisScreen.classList.remove("active");
-betsScreen.classList.remove("active");
-navHome.classList.remove("active");
-navMatches.classList.remove("active");
-navBets.classList.remove("active");
-if(screen === "home"){
-homeScreen.classList.add("active");
-navHome.classList.add("active");
-}
-if(screen === "matches"){
-matchesScreen.classList.add("active");
-navMatches.classList.add("active");
-}
-if(screen === "analysis"){
-analysisScreen.classList.add("active");
-navMatches.classList.add("active");
-}
-if(screen === "bets"){
-betsScreen.classList.add("active");
-navBets.classList.add("active");
-}
-window.scrollTo(0,0);
+function showScreen(screenName){
+  homeScreen.classList.remove("active");
+  matchesScreen.classList.remove("active");
+  analysisScreen.classList.remove("active");
+  betsScreen.classList.remove("active");
+  navHome.classList.remove("active");
+  navMatches.classList.remove("active");
+  navBets.classList.remove("active");
+  if(screenName === "home"){
+    homeScreen.classList.add("active");
+    navHome.classList.add("active");
+  }
+  if(screenName === "matches"){
+    matchesScreen.classList.add("active");
+    navMatches.classList.add("active");
+  }
+  if(screenName === "analysis"){
+    analysisScreen.classList.add("active");
+    navMatches.classList.add("active");
+  }
+  if(screenName === "bets"){
+    betsScreen.classList.add("active");
+    navBets.classList.add("active");
+  }
+  window.scrollTo({
+    top:0,
+    behavior:"instant"
+  });
 }
 /* =========================
-   FECHA
+   FECHA ESPAÑA
 ========================= */
 function getToday(){
-const now = new Date();
-return new Intl.DateTimeFormat(
-"en-CA",
-{
-timeZone:"Europe/Madrid"
-}
-).format(now);
+  return new Intl.DateTimeFormat(
+    "en-CA",
+    {
+      timeZone:"Europe/Madrid"
+    }
+  ).format(new Date());
 }
 /* =========================
-   HORA
+   HORA ESPAÑA
 ========================= */
 function formatTime(dateString){
-return new Date(dateString).toLocaleTimeString(
-"es-ES",
-{
-hour:"2-digit",
-minute:"2-digit",
-timeZone:"Europe/Madrid"
-}
-);
+  if(!dateString){
+    return "--:--";
+  }
+  const date =
+    new Date(dateString);
+  if(Number.isNaN(date.getTime())){
+    return "--:--";
+  }
+  return date.toLocaleTimeString(
+    "es-ES",
+    {
+      hour:"2-digit",
+      minute:"2-digit",
+      timeZone:"Europe/Madrid"
+    }
+  );
 }
 /* =========================
    ABRIR PARTIDOS
 ========================= */
 function openMatches(){
-showScreen("matches");
-loadMatches();
+  showScreen("matches");
+  loadMatches();
 }
 /* =========================
    CARGAR PARTIDOS
 ========================= */
 async function loadMatches(){
-matchesContainer.innerHTML =
-'<div class="loading">⚽ Cargando partidos reales...</div>';
-const today = getToday();
-document.getElementById("dateText").textContent =
-"Partidos de hoy · " + today;
-const response = await fetch(
-  "https://betai-bice.vercel.app/api/fixtures?date=" +
-  encodeURIComponent(today),
-  {
-    method: "GET",
-    headers: {
-      "Accept": "application/json"
-    },
-    cache: "no-store"
+  matchesContainer.innerHTML =
+    '<div class="loading">⚽ Cargando partidos reales...</div>';
+  const today = getToday();
+  dateText.textContent =
+    "Partidos de hoy · " + today;
+  try{
+    const url =
+      "https://betai-bice.vercel.app/api/fixtures?date=" +
+      encodeURIComponent(today);
+    const response =
+      await fetch(url, {
+        method:"GET",
+        headers:{
+          "Accept":"application/json"
+        },
+        cache:"no-store"
+      });
+    if(!response.ok){
+      throw new Error(
+        "HTTP " + response.status
+      );
+    }
+    const data =
+      await response.json();
+    console.log(
+      "BetAI API:",
+      data
+    );
+    if(!Array.isArray(data.partidos)){
+      throw new Error(
+        "La API no ha devuelto la lista de partidos."
+      );
+    }
+    allMatches =
+      data.partidos;
+    selectedLeague =
+      "Todas";
+    createLeagueFilters();
+    renderMatches();
+  }catch(error){
+    console.error(
+      "Error BetAI:",
+      error
+    );
+    matchesContainer.innerHTML = "";
+    const errorCard =
+      document.createElement("div");
+    errorCard.className =
+      "card error";
+    const title =
+      document.createElement("strong");
+    title.textContent =
+      "No se pudieron cargar los partidos";
+    const message =
+      document.createElement("p");
+    message.textContent =
+      error.message ||
+      "Error desconocido";
+    errorCard.appendChild(title);
+    errorCard.appendChild(message);
+    matchesContainer.appendChild(
+      errorCard
+    );
   }
-);
-
-if (!response.ok) {
-  throw new Error("HTTP " + response.status);
-}
-
-const data = await response.json();
-
-console.log("Respuesta BetAI:", data);
-
-allMatches = Array.isArray(data.partidos)
-  ? data.partidos
-  : [];
-selectedLeague = "Todas";
-createFilters();
-renderMatches();
-}catch(error){
-matchesContainer.innerHTML =
-'<div class="card error">' +
-"<strong>No se pudieron cargar los partidos.</strong>" +
-"<p>" +
-escapeHTML(error.message) +
-"</p>" +
-"</div>";
-}
 }
 /* =========================
-   FILTROS
+   FILTROS DE LIGAS
 ========================= */
-function createFilters(){
-filters.innerHTML = "";
-const leagues = [
-"Todas",
-...new Set(
-allMatches
-.map(function(match){
-return match.liga;
-})
-.filter(Boolean)
-)
-];
-leagues.forEach(function(league){
-const button =
-document.createElement("button");
-button.type = "button";
-button.className =
-"filter" +
-(league === "Todas"
-? " active"
-: "");
-button.textContent = league;
-button.addEventListener(
-"click",
-function(){
-selectedLeague = league;
-document
-.querySelectorAll(".filter")
-.forEach(function(item){
-item.classList.remove("active");
-});
-button.classList.add("active");
-renderMatches();
-}
-);
-filters.appendChild(button);
-});
+function createLeagueFilters(){
+  leagueFilters.innerHTML = "";
+  const leagues = [
+    "Todas"
+  ];
+  allMatches.forEach(function(match){
+    const league =
+      match.liga;
+    if(
+      league &&
+      !leagues.includes(league)
+    ){
+      leagues.push(league);
+    }
+  });
+  leagues.forEach(function(league){
+    const button =
+      document.createElement("button");
+    button.type =
+      "button";
+    button.className =
+      "filter";
+    if(league === "Todas"){
+      button.classList.add(
+        "active"
+      );
+    }
+    button.textContent =
+      league;
+    button.addEventListener(
+      "click",
+      function(){
+        selectedLeague =
+          league;
+        document
+          .querySelectorAll(".filter")
+          .forEach(function(item){
+            item.classList.remove(
+              "active"
+            );
+          });
+        button.classList.add(
+          "active"
+        );
+        renderMatches();
+      }
+    );
+    leagueFilters.appendChild(
+      button
+    );
+  });
 }
 /* =========================
    MOSTRAR PARTIDOS
 ========================= */
 function renderMatches(){
-let matches = allMatches;
-if(selectedLeague !== "Todas"){
-matches =
-allMatches.filter(function(match){
-return match.liga === selectedLeague;
-});
+  matchesContainer.innerHTML = "";
+  let matches =
+    allMatches;
+  if(selectedLeague !== "Todas"){
+    matches =
+      allMatches.filter(
+        function(match){
+          return (
+            match.liga ===
+            selectedLeague
+          );
+        }
+      );
+  }
+  if(matches.length === 0){
+    const card =
+      document.createElement("div");
+    card.className =
+      "card";
+    const message =
+      document.createElement("div");
+    message.className =
+      "loading";
+    message.textContent =
+      "No hay partidos disponibles para esta selección.";
+    card.appendChild(
+      message
+    );
+    matchesContainer.appendChild(
+      card
+    );
+    return;
+  }
+  let currentLeague = "";
+  matches.forEach(function(match){
+    /* ---------- LIGA ---------- */
+    if(match.liga !== currentLeague){
+      currentLeague =
+        match.liga;
+      const title =
+        document.createElement("div");
+      title.className =
+        "league-title";
+      title.textContent =
+        (match.bandera || "⚽") +
+        " " +
+        (match.liga || "Competición");
+      matchesContainer.appendChild(
+        title
+      );
+    }
+    /* ---------- TARJETA ---------- */
+    const card =
+      document.createElement("div");
+    card.className =
+      "card";
+    const matchRow =
+      document.createElement("div");
+    matchRow.className =
+      "match";
+    /* ---------- EQUIPOS ---------- */
+    const teams =
+      document.createElement("div");
+    teams.className =
+      "teams";
+    const home =
+      createTeamLine(
+        match.local,
+        match.logoLocal
+      );
+    const away =
+      createTeamLine(
+        match.visitante,
+        match.logoVisitante
+      );
+    const status =
+      document.createElement("div");
+    status.className =
+      "status";
+    status.textContent =
+      match.estadoLargo ||
+      match.estado ||
+      "";
+    teams.appendChild(home);
+    teams.appendChild(away);
+    teams.appendChild(status);
+    /* ---------- HORA ---------- */
+    const right =
+      document.createElement("div");
+    right.className =
+      "time";
+    const time =
+      document.createElement("div");
+    time.textContent =
+      formatTime(
+        match.fecha
+      );
+    const analyse =
+      document.createElement("button");
+    analyse.type =
+      "button";
+    analyse.className =
+      "analyse";
+    analyse.textContent =
+      "Analizar";
+    analyse.addEventListener(
+      "click",
+      function(){
+        openMatch(match);
+      }
+    );
+    right.appendChild(time);
+    right.appendChild(analyse);
+    matchRow.appendChild(
+      teams
+    );
+    matchRow.appendChild(
+      right
+    );
+    card.appendChild(
+      matchRow
+    );
+    matchesContainer.appendChild(
+      card
+    );
+  });
 }
-if(matches.length === 0){
-matchesContainer.innerHTML =
-'<div class="card">' +
-'<div class="loading">' +
-'No hay partidos disponibles para esta selección.' +
-'</div>' +
-'</div>';
-return;
-}
-matchesContainer.innerHTML = "";
-let currentLeague = "";
-matches.forEach(function(match){
-if(match.liga !== currentLeague){
-currentLeague = match.liga;
-const title =
-document.createElement("div");
-title.className =
-"league-title";
-title.textContent =
-(match.bandera || "⚽") +
-" " +
-(match.liga || "Competición");
-matchesContainer.appendChild(title);
-}
-const card =
-document.createElement("div");
-card.className = "card";
-const matchBox =
-document.createElement("div");
-matchBox.className = "match";
-const teams =
-document.createElement("div");
-teams.className = "teams";
-const home =
-document.createElement("div");
-home.className =
-"team-line";
-if(match.logoLocal){
-const img =
-document.createElement("img");
-img.className =
-"logo-team";
-img.src =
-match.logoLocal;
-img.alt = "";
-home.appendChild(img);
-}
-const homeName =
-document.createElement("span");
-homeName.textContent =
-match.local || "Local";
-home.appendChild(homeName);
-const away =
-document.createElement("div");
-away.className =
-"team-line";
-if(match.logoVisitante){
-const img =
-document.createElement("img");
-img.className =
-"logo-team";
-img.src =
-match.logoVisitante;
-img.alt = "";
-away.appendChild(img);
-}
-const awayName =
-document.createElement("span");
-awayName.textContent =
-match.visitante || "Visitante";
-away.appendChild(awayName);
-const status =
-document.createElement("div");
-status.className =
-"status";
-status.textContent =
-match.estadoLargo ||
-match.estado ||
-"";
-teams.appendChild(home);
-teams.appendChild(away);
-teams.appendChild(status);
-const time =
-document.createElement("div");
-time.className =
-"time";
-time.appendChild(
-document.createTextNode(
-formatTime(match.fecha)
-)
-);
-time.appendChild(
-document.createElement("br")
-);
-const analyse =
-document.createElement("button");
-analyse.type = "button";
-analyse.className =
-"analyse";
-analyse.textContent =
-"Analizar";
-analyse.addEventListener(
-"click",
-function(){
-openMatch(match);
-}
-);
-time.appendChild(analyse);
-matchBox.appendChild(teams);
-matchBox.appendChild(time);
-card.appendChild(matchBox);
-matchesContainer.appendChild(card);
-});
+/* =========================
+   CREAR LÍNEA DE EQUIPO
+========================= */
+function createTeamLine(
+  teamName,
+  logo
+){
+  const line =
+    document.createElement("div");
+  line.className =
+    "team-line";
+  if(logo){
+    const image =
+      document.createElement("img");
+    image.className =
+      "logo-team";
+    image.src =
+      logo;
+    image.alt =
+      "";
+    image.onerror =
+      function(){
+        image.style.display =
+          "none";
+      };
+    line.appendChild(
+      image
+    );
+  }
+  const name =
+    document.createElement("span");
+  name.className =
+    "team-name";
+  name.textContent =
+    teamName ||
+    "Equipo";
+  line.appendChild(
+    name
+  );
+  return line;
 }
 /* =========================
    ABRIR ANÁLISIS
 ========================= */
 function openMatch(match){
-document.getElementById(
-"matchTitle"
-).textContent =
-(match.local || "Local") +
-" vs " +
-(match.visitante || "Visitante");
-document.getElementById(
-"matchInfo"
-).textContent =
-(match.liga || "Fútbol") +
-" · " +
-formatTime(match.fecha);
-document.getElementById(
-"homeTeam"
-).textContent =
-match.local || "-";
-document.getElementById(
-"awayTeam"
-).textContent =
-match.visitante || "-";
-showScreen("analysis");
+  document.getElementById(
+    "analysisTitle"
+  ).textContent =
+    (match.local || "Local") +
+    " vs " +
+    (match.visitante || "Visitante");
+  document.getElementById(
+    "analysisInfo"
+  ).textContent =
+    (match.liga || "Fútbol") +
+    " · " +
+    formatTime(match.fecha);
+  document.getElementById(
+    "analysisHome"
+  ).textContent =
+    match.local ||
+    "-";
+  document.getElementById(
+    "analysisAway"
+  ).textContent =
+    match.visitante ||
+    "-";
+  showScreen(
+    "analysis"
+  );
 }
 /* =========================
-   SEGURIDAD
-========================= */
-function escapeHTML(value){
-return String(value || "")
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
-}
-/* =========================
-   BOTONES
+   BOTONES DE NAVEGACIÓN
 ========================= */
 document
-.getElementById("homeMatchesButton")
-.addEventListener(
-"click",
-openMatches
-);
+  .getElementById("openMatchesHome")
+  .addEventListener(
+    "click",
+    function(){
+      openMatches();
+    }
+  );
 navHome.addEventListener(
-"click",
-function(){
-showScreen("home");
-}
+  "click",
+  function(){
+    showScreen("home");
+  }
 );
 navMatches.addEventListener(
-"click",
-openMatches
+  "click",
+  function(){
+    openMatches();
+  }
 );
 navBets.addEventListener(
-"click",
-function(){
-showScreen("bets");
-}
+  "click",
+  function(){
+    showScreen("bets");
+  }
 );
 document
-.getElementById("backMatchesButton")
-.addEventListener(
-"click",
-function(){
-showScreen("matches");
-}
-);
+  .getElementById("backToMatches")
+  .addEventListener(
+    "click",
+    function(){
+      showScreen("matches");
+    }
+  );
+/* =========================
+   FIN BETAI
+========================= */
 </script>
 </body>
 </html>
