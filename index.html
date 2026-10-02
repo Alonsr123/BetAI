@@ -7,1116 +7,1871 @@
 <title>BetAI</title>
 <style>
 *{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
+box-sizing:border-box;
+-webkit-tap-highlight-color:transparent
 }
 html,body{
-  margin:0;
-  padding:0;
-  background:#080c16;
-  color:#f5f7fb;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+margin:0;
+padding:0;
+background:#080c16;
+color:#f5f7fb;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif
 }
 button{
-  font:inherit;
-  cursor:pointer;
-  -webkit-appearance:none;
-  appearance:none;
+font:inherit;
+cursor:pointer;
+-webkit-appearance:none;
+appearance:none
 }
 .app{
-  width:100%;
-  max-width:720px;
-  min-height:100vh;
-  margin:auto;
-  padding-bottom:100px;
+width:100%;
+max-width:720px;
+min-height:100vh;
+margin:auto;
+padding-bottom:100px
 }
 .header{
-  padding:22px 18px 14px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+padding:22px 18px 14px;
+display:flex;
+justify-content:space-between;
+align-items:center
 }
 .logo{
-  font-size:28px;
-  font-weight:800;
+font-size:28px;
+font-weight:800
 }
 .logo span{
-  color:#6ee7b7;
+color:#6ee7b7
 }
 .subtitle{
-  color:#94a3b8;
-  font-size:12px;
-  margin-top:3px;
+color:#94a3b8;
+font-size:12px;
+margin-top:3px
 }
 .demo{
-  background:#15352c;
-  color:#6ee7b7;
-  border-radius:20px;
-  padding:7px 10px;
-  font-size:11px;
-  font-weight:700;
+background:#15352c;
+color:#6ee7b7;
+border-radius:20px;
+padding:7px 10px;
+font-size:11px;
+font-weight:700
 }
 .content{
-  padding:10px 18px;
+padding:10px 18px
 }
 .screen{
-  display:none;
+display:none
 }
 .screen.active{
-  display:block;
+display:block
 }
 h1{
-  font-size:26px;
-  margin:12px 0 6px;
+font-size:26px;
+margin:12px 0 6px
 }
 .intro{
-  color:#94a3b8;
-  margin:0 0 18px;
-  font-size:14px;
+color:#94a3b8;
+margin:0 0 18px;
+font-size:14px
 }
 .card{
-  background:#111827;
-  border:1px solid #253047;
-  border-radius:18px;
-  padding:16px;
-  margin-bottom:12px;
+background:#111827;
+border:1px solid #253047;
+border-radius:18px;
+padding:16px;
+margin-bottom:12px
 }
 .note{
-  color:#94a3b8;
-  font-size:12px;
-  line-height:1.55;
+color:#94a3b8;
+font-size:12px;
+line-height:1.55
 }
 .section{
-  font-size:17px;
-  font-weight:750;
-  margin-bottom:12px;
+font-size:17px;
+font-weight:750;
+margin-bottom:12px
 }
 .grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px
 }
 .label{
-  color:#94a3b8;
-  font-size:12px;
+color:#94a3b8;
+font-size:12px
 }
 .number{
-  font-size:22px;
-  font-weight:800;
-  margin-top:7px;
+font-size:22px;
+font-weight:800;
+margin-top:7px
 }
 .primary-button{
-  display:block;
-  width:100%;
-  border:0;
-  background:#6ee7b7;
-  color:#062017;
-  font-weight:800;
-  border-radius:12px;
-  padding:12px 14px;
-  margin-top:14px;
+display:block;
+width:100%;
+border:0;
+background:#6ee7b7;
+color:#062017;
+font-weight:800;
+border-radius:12px;
+padding:12px 14px;
+margin-top:14px
 }
 .back{
-  border:0;
-  background:#172033;
-  color:#fff;
-  border-radius:10px;
-  padding:9px 12px;
-  margin-bottom:8px;
+border:0;
+background:#172033;
+color:#fff;
+border-radius:10px;
+padding:9px 12px;
+margin-bottom:8px
 }
 .tabs{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:7px;
-  margin-bottom:12px;
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:7px;
+margin-bottom:12px
 }
 .tab{
-  border:1px solid #253047;
-  background:#111827;
-  color:#cbd5e1;
-  border-radius:12px;
-  padding:10px 5px;
-  font-size:12px;
-  font-weight:700;
+border:1px solid #253047;
+background:#111827;
+color:#cbd5e1;
+border-radius:12px;
+padding:10px 5px;
+font-size:12px;
+font-weight:700
 }
 .tab.active{
-  background:#6ee7b7;
-  color:#062017;
-  border-color:#6ee7b7;
+background:#6ee7b7;
+color:#062017;
+border-color:#6ee7b7
 }
 .filters{
-  display:flex;
-  gap:8px;
-  overflow-x:auto;
-  padding:2px 0 10px;
-  margin-bottom:5px;
+display:flex;
+gap:8px;
+overflow-x:auto;
+padding:2px 0 10px;
+margin-bottom:5px
 }
 .filter{
-  flex:0 0 auto;
-  border:1px solid #253047;
-  background:#111827;
-  color:#cbd5e1;
-  border-radius:20px;
-  padding:8px 13px;
-  font-size:12px;
+flex:0 0 auto;
+border:1px solid #253047;
+background:#111827;
+color:#cbd5e1;
+border-radius:20px;
+padding:8px 13px;
+font-size:12px
 }
 .filter.active{
-  background:#6ee7b7;
-  color:#062017;
-  border-color:#6ee7b7;
-  font-weight:800;
+background:#6ee7b7;
+color:#062017;
+border-color:#6ee7b7;
+font-weight:800
 }
 .date-controls{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin-bottom:12px;
+display:flex;
+align-items:center;
+gap:8px;
+margin-bottom:12px
 }
 .date-button{
-  border:1px solid #253047;
-  background:#111827;
-  color:#fff;
-  border-radius:10px;
-  padding:9px 11px;
+border:1px solid #253047;
+background:#111827;
+color:#fff;
+border-radius:10px;
+padding:9px 11px
 }
 .date-label{
-  flex:1;
-  text-align:center;
-  color:#cbd5e1;
-  font-size:12px;
-  font-weight:700;
+flex:1;
+text-align:center;
+color:#cbd5e1;
+font-size:12px;
+font-weight:700
 }
 .match{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:12px
 }
 .teams{
-  min-width:0;
-  flex:1;
-  font-size:14px;
-  font-weight:700;
-  line-height:1.7;
+min-width:0;
+flex:1;
+font-size:14px;
+font-weight:700;
+line-height:1.7
 }
 .team-line{
-  display:flex;
-  align-items:center;
-  gap:7px;
-  min-width:0;
+display:flex;
+align-items:center;
+gap:7px;
+min-width:0
 }
 .team-name{
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap
 }
 .logo-team{
-  width:28px;
-  height:28px;
-  object-fit:contain;
-  flex:0 0 28px;
+width:28px;
+height:28px;
+object-fit:contain;
+flex:0 0 28px
 }
 .status{
-  color:#94a3b8;
-  font-size:10px;
-  margin-top:4px;
+color:#94a3b8;
+font-size:10px;
+margin-top:4px
 }
 .time{
-  flex:0 0 auto;
-  color:#94a3b8;
-  font-size:12px;
-  text-align:right;
+flex:0 0 auto;
+color:#94a3b8;
+font-size:12px;
+text-align:right
 }
 .analyse{
-  border:0;
-  background:#6ee7b7;
-  color:#062017;
-  font-weight:800;
-  border-radius:9px;
-  padding:8px 10px;
-  margin-top:7px;
+border:0;
+background:#6ee7b7;
+color:#062017;
+font-weight:800;
+border-radius:9px;
+padding:8px 10px;
+margin-top:7px
 }
 .league-title{
-  color:#6ee7b7;
-  font-size:13px;
-  font-weight:800;
-  margin:18px 0 8px;
+color:#6ee7b7;
+font-size:13px;
+font-weight:800;
+margin:18px 0 8px
 }
 .loading{
-  text-align:center;
-  padding:35px 10px;
-  color:#94a3b8;
+text-align:center;
+padding:35px 10px;
+color:#94a3b8
 }
 .error{
-  color:#fca5a5;
-  line-height:1.5;
+color:#fca5a5;
+line-height:1.5
 }
 .error strong{
-  color:#fecaca;
+color:#fecaca
 }
+/* =========================================
+   ANÁLISIS
+========================================= */
+.analysis-header{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
+margin-bottom:16px
+}
+.analysis-team{
+width:42%;
+text-align:center;
+font-weight:800
+}
+.analysis-team img{
+width:52px;
+height:52px;
+object-fit:contain;
+display:block;
+margin:0 auto 8px
+}
+.analysis-vs{
+color:#6ee7b7;
+font-size:14px;
+font-weight:800
+}
+/* MERCADOS */
+.market-card{
+border:1px solid #315244;
+background:#10251f;
+border-radius:16px;
+padding:14px;
+margin-bottom:10px
+}
+.market-title{
+font-size:13px;
+color:#cbd5e1;
+margin-bottom:5px
+}
+.market-value{
+font-size:25px;
+font-weight:850;
+color:#6ee7b7
+}
+.market-small{
+color:#94a3b8;
+font-size:11px;
+margin-top:3px
+}
+/* ESTADÍSTICAS */
+.stat-row{
+display:grid;
+grid-template-columns:1fr 70px 1fr;
+align-items:center;
+gap:8px;
+padding:9px 0;
+border-bottom:1px solid #202b3d
+}
+.stat-row:last-child{
+border-bottom:0
+}
+.stat-home{
+text-align:right;
+font-weight:750
+}
+.stat-away{
+font-weight:750
+}
+.stat-name{
+text-align:center;
+color:#94a3b8;
+font-size:11px
+}
+.form-box{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px
+}
+.form-team{
+background:#0c1320;
+border-radius:12px;
+padding:12px
+}
+.form-title{
+font-weight:800;
+font-size:13px;
+margin-bottom:8px
+}
+.form-line{
+font-size:12px;
+color:#cbd5e1;
+line-height:1.8
+}
+/* JUGADORES */
+.player{
+display:grid;
+grid-template-columns:38px 1fr auto;
+gap:9px;
+align-items:center;
+padding:9px 0;
+border-bottom:1px solid #202b3d
+}
+.player:last-child{
+border-bottom:0
+}
+.player img{
+width:34px;
+height:34px;
+object-fit:cover;
+border-radius:50%
+}
+.player-name{
+font-size:12px;
+font-weight:750
+}
+.player-info{
+font-size:10px;
+color:#94a3b8;
+margin-top:2px
+}
+.player-stats{
+text-align:right;
+font-size:11px;
+color:#cbd5e1;
+line-height:1.5
+}
+.badge{
+display:inline-block;
+background:#172033;
+color:#cbd5e1;
+border-radius:7px;
+padding:3px 6px;
+font-size:10px
+}
+/* NAVEGACIÓN */
 .bottom{
-  position:fixed;
-  left:0;
-  right:0;
-  bottom:0;
-  background:rgba(8,12,22,.98);
-  border-top:1px solid #253047;
-  z-index:100;
+position:fixed;
+left:0;
+right:0;
+bottom:0;
+background:rgba(8,12,22,.98);
+border-top:1px solid #253047;
+z-index:100
 }
 .bottom-inner{
-  width:100%;
-  max-width:720px;
-  margin:auto;
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  padding:8px 10px calc(8px + env(safe-area-inset-bottom));
+width:100%;
+max-width:720px;
+margin:auto;
+display:grid;
+grid-template-columns:repeat(3,1fr);
+padding:8px 10px calc(8px + env(safe-area-inset-bottom))
 }
 .nav-button{
-  border:0;
-  background:transparent;
-  color:#718096;
-  padding:8px 4px;
-  font-size:11px;
+border:0;
+background:transparent;
+color:#718096;
+padding:8px 4px;
+font-size:11px
 }
 .nav-button.active{
-  color:#6ee7b7;
-  font-weight:800;
+color:#6ee7b7;
+font-weight:800
 }
 .nav-icon{
-  display:block;
-  font-size:19px;
-  margin-bottom:3px;
+display:block;
+font-size:19px;
+margin-bottom:3px
 }
 </style>
 </head>
 <body>
 <div class="app">
 <header class="header">
-  <div>
-    <div class="logo">Bet<span>AI</span></div>
-    <div class="subtitle">Análisis inteligente de fútbol</div>
-  </div>
-  <div class="demo">LIVE DATA</div>
+<div>
+<div class="logo">Bet<span>AI</span></div>
+<div class="subtitle">Análisis inteligente de fútbol</div>
+</div>
+<div class="demo">LIVE DATA</div>
 </header>
 <!-- ================= INICIO ================= -->
 <section id="homeScreen" class="screen active">
-  <div class="content">
-    <h1>Panel principal</h1>
-    <p class="intro">
-      Tu centro personal de análisis de fútbol.
-    </p>
-    <div class="card">
-      <strong>⚽ Partidos reales</strong>
-      <p class="note">
-        Consulta los partidos reales de las competiciones seleccionadas.
-      </p>
-      <button
-        id="openMatchesHome"
-        class="primary-button"
-        type="button">
-        Ver partidos
-      </button>
-    </div>
-    <div class="grid">
-      <div class="card">
-        <div class="label">Competiciones</div>
-        <div class="number">16</div>
-      </div>
-      <div class="card">
-        <div class="label">Datos</div>
-        <div class="number">LIVE</div>
-      </div>
-    </div>
-  </div>
+<div class="content">
+<h1>Panel principal</h1>
+<p class="intro">
+Tu centro personal de análisis de fútbol.
+</p>
+<div class="card">
+<strong>⚽ Partidos reales</strong>
+<p class="note">
+Consulta los partidos reales de las competiciones disponibles.
+</p>
+<button
+id="openMatchesHome"
+class="primary-button"
+type="button">
+Ver partidos
+</button>
+</div>
+<div class="grid">
+<div class="card">
+<div class="label">Competiciones</div>
+<div class="number">LIVE</div>
+</div>
+<div class="card">
+<div class="label">Datos</div>
+<div class="number">LIVE</div>
+</div>
+</div>
+</div>
 </section>
 <!-- ================= PARTIDOS ================= -->
 <section id="matchesScreen" class="screen">
-  <div class="content">
-    <h1>Partidos</h1>
-    <p id="dateText" class="intro">
-      Partidos reales de BetAI
-    </p>
-    <!-- TRES MODOS -->
-    <div class="tabs">
-      <button
-        id="tabToday"
-        class="tab active"
-        type="button">
-        📅 Hoy
-      </button>
-      <button
-        id="tabRound"
-        class="tab"
-        type="button">
-        🏆 Jornada
-      </button>
-      <button
-        id="tabCalendar"
-        class="tab"
-        type="button">
-        📋 Calendario
-      </button>
-    </div>
-    <!-- CONTROLES CALENDARIO -->
-    <div
-      id="dateControls"
-      class="date-controls"
-      style="display:none;">
-      <button
-        id="previousDay"
-        class="date-button"
-        type="button">
-        ←
-      </button>
-      <div
-        id="selectedDate"
-        class="date-label">
-      </div>
-      <button
-        id="nextDay"
-        class="date-button"
-        type="button">
-        →
-      </button>
-    </div>
-    <!-- FILTROS -->
-    <div
-      id="leagueFilters"
-      class="filters">
-    </div>
-    <!-- PARTIDOS -->
-    <div id="matchesContainer">
-      <div class="loading">
-        Pulsa Partidos para cargar los encuentros.
-      </div>
-    </div>
-  </div>
+<div class="content">
+<h1>Partidos</h1>
+<p id="dateText" class="intro">
+Partidos reales de BetAI
+</p>
+<div class="tabs">
+<button
+id="tabToday"
+class="tab active"
+type="button">
+📅 Hoy
+</button>
+<button
+id="tabRound"
+class="tab"
+type="button">
+🏆 Jornada
+</button>
+<button
+id="tabCalendar"
+class="tab"
+type="button">
+📋 Calendario
+</button>
+</div>
+<div
+id="dateControls"
+class="date-controls"
+style="display:none;">
+<button
+id="previousDay"
+class="date-button"
+type="button">
+←
+</button>
+<div
+id="selectedDate"
+class="date-label">
+</div>
+<button
+id="nextDay"
+class="date-button"
+type="button">
+→
+</button>
+</div>
+<div
+id="leagueFilters"
+class="filters">
+</div>
+<div id="matchesContainer">
+<div class="loading">
+Pulsa Partidos para cargar los encuentros.
+</div>
+</div>
+</div>
 </section>
 <!-- ================= ANÁLISIS ================= -->
 <section id="analysisScreen" class="screen">
-  <div class="content">
-    <button
-      id="backToMatches"
-      class="back"
-      type="button">
-      ← Volver a partidos
-    </button>
-    <h1 id="analysisTitle">
-      Partido
-    </h1>
-    <p
-      id="analysisInfo"
-      class="intro">
-    </p>
-    <div class="card">
-      <div class="section">
-        Partido
-      </div>
-      <div class="grid">
-        <div>
-          <div class="label">Local</div>
-          <div
-            id="analysisHome"
-            class="number">
-            -
-          </div>
-        </div>
-        <div>
-          <div class="label">Visitante</div>
-          <div
-            id="analysisAway"
-            class="number">
-            -
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="section">
-        Modelo BetAI
-      </div>
-      <p class="note">
-        Aquí construiremos el análisis estadístico utilizando
-        forma reciente, goles, local/visitante, xG,
-        enfrentamientos directos y otros datos.
-      </p>
-    </div>
-    <div class="card">
-      <div class="section">
-        Próximamente
-      </div>
-      <p class="note">
-        📊 Forma reciente<br>
-        ⚽ Goles<br>
-        📈 xG<br>
-        🏠 Local / visitante<br>
-        🤝 H2H<br>
-        🧮 Simulación<br>
-        📊 Probabilidades del modelo
-      </p>
-    </div>
-  </div>
+<div class="content">
+<button
+id="backToMatches"
+class="back"
+type="button">
+← Volver a partidos
+</button>
+<h1 id="analysisTitle">
+Análisis
+</h1>
+<p
+id="analysisInfo"
+class="intro">
+Cargando información...
+</p>
+<!-- CABECERA -->
+<div class="card">
+<div
+id="analysisHeader"
+class="analysis-header">
+<div class="analysis-team">
+<img
+id="analysisHomeLogo"
+src=""
+alt="">
+<div id="analysisHomeName">
+Local
+</div>
+</div>
+<div class="analysis-vs">
+VS
+</div>
+<div class="analysis-team">
+<img
+id="analysisAwayLogo"
+src=""
+alt="">
+<div id="analysisAwayName">
+Visitante
+</div>
+</div>
+</div>
+</div>
+<!-- MERCADOS -->
+<div class="section">
+🎯 Mercados destacados
+</div>
+<div
+id="marketsContainer">
+<div class="card loading">
+Calculando mercados...
+</div>
+</div>
+<!-- GOLES -->
+<div class="card">
+<div class="section">
+⚽ Goles
+</div>
+<div id="goalsStats"></div>
+</div>
+<!-- CÓRNERS -->
+<div class="card">
+<div class="section">
+🚩 Córners
+</div>
+<div id="cornersStats"></div>
+</div>
+<!-- BTTS -->
+<div class="card">
+<div class="section">
+🤝 Ambos marcan
+</div>
+<div id="bttsStats"></div>
+</div>
+<!-- TARJETAS -->
+<div class="card">
+<div class="section">
+🟨 Tarjetas
+</div>
+<div id="cardsStats"></div>
+</div>
+<!-- FORMA -->
+<div class="card">
+<div class="section">
+📊 Forma reciente
+</div>
+<div
+id="formStats"
+class="form-box">
+</div>
+</div>
+<!-- H2H -->
+<div class="card">
+<div class="section">
+🤝 Enfrentamientos directos
+</div>
+<div id="h2hStats"></div>
+</div>
+<!-- JUGADORES -->
+<div class="card">
+<div class="section">
+👤 Estadísticas individuales
+</div>
+<div class="note">
+Datos individuales disponibles en la temporada actual.
+</div>
+<h3 id="playersHomeTitle">
+Local
+</h3>
+<div id="homePlayers"></div>
+<h3 id="playersAwayTitle">
+Visitante
+</h3>
+<div id="awayPlayers"></div>
+</div>
+</div>
 </section>
 <!-- ================= APUESTAS ================= -->
 <section id="betsScreen" class="screen">
-  <div class="content">
-    <h1>Mis apuestas</h1>
-    <p class="intro">
-      Seguimiento personal.
-    </p>
-    <div class="card">
-      <div class="section">
-        Próximamente
-      </div>
-      <p class="note">
-        Aquí podremos guardar tus apuestas, cuotas,
-        resultados y estadísticas históricas.
-      </p>
-    </div>
-  </div>
+<div class="content">
+<h1>Mis apuestas</h1>
+<p class="intro">
+Seguimiento personal.
+</p>
+<div class="card">
+<div class="section">
+Próximamente
+</div>
+<p class="note">
+Aquí podremos guardar tus apuestas, cuotas,
+resultados y estadísticas históricas.
+</p>
+</div>
+</div>
 </section>
 <!-- ================= NAVEGACIÓN ================= -->
 <nav class="bottom">
-  <div class="bottom-inner">
-    <button
-      id="navHome"
-      class="nav-button active"
-      type="button">
-      <span class="nav-icon">⌂</span>
-      Inicio
-    </button>
-    <button
-      id="navMatches"
-      class="nav-button"
-      type="button">
-      <span class="nav-icon">⚽</span>
-      Partidos
-    </button>
-    <button
-      id="navBets"
-      class="nav-button"
-      type="button">
-      <span class="nav-icon">▣</span>
-      Mis apuestas
-    </button>
-  </div>
+<div class="bottom-inner">
+<button
+id="navHome"
+class="nav-button active"
+type="button">
+<span class="nav-icon">⌂</span>
+Inicio
+</button>
+<button
+id="navMatches"
+class="nav-button"
+type="button">
+<span class="nav-icon">⚽</span>
+Partidos
+</button>
+<button
+id="navBets"
+class="nav-button"
+type="button">
+<span class="nav-icon">▣</span>
+Mis apuestas
+</button>
+</div>
 </nav>
 </div>
 <script>
 /* =========================================================
    BETAI
 ========================================================= */
-/* ================= VARIABLES ================= */
 let allMatches = [];
 let selectedLeague = "Todas";
 let currentMode = "today";
 let selectedDate = getToday();
-/* ================= ELEMENTOS ================= */
+/* =========================================================
+   ELEMENTOS
+========================================================= */
 const homeScreen =
-  document.getElementById("homeScreen");
+document.getElementById("homeScreen");
 const matchesScreen =
-  document.getElementById("matchesScreen");
+document.getElementById("matchesScreen");
 const analysisScreen =
-  document.getElementById("analysisScreen");
+document.getElementById("analysisScreen");
 const betsScreen =
-  document.getElementById("betsScreen");
+document.getElementById("betsScreen");
 const navHome =
-  document.getElementById("navHome");
+document.getElementById("navHome");
 const navMatches =
-  document.getElementById("navMatches");
+document.getElementById("navMatches");
 const navBets =
-  document.getElementById("navBets");
+document.getElementById("navBets");
 const matchesContainer =
-  document.getElementById("matchesContainer");
+document.getElementById("matchesContainer");
 const leagueFilters =
-  document.getElementById("leagueFilters");
+document.getElementById("leagueFilters");
 const dateText =
-  document.getElementById("dateText");
+document.getElementById("dateText");
 const dateControls =
-  document.getElementById("dateControls");
+document.getElementById("dateControls");
 const selectedDateElement =
-  document.getElementById("selectedDate");
+document.getElementById("selectedDate");
 const tabToday =
-  document.getElementById("tabToday");
+document.getElementById("tabToday");
 const tabRound =
-  document.getElementById("tabRound");
+document.getElementById("tabRound");
 const tabCalendar =
-  document.getElementById("tabCalendar");
-/* ================= FECHA ACTUAL ================= */
+document.getElementById("tabCalendar");
+/* =========================================================
+   FECHA
+========================================================= */
 function getToday(){
-  return new Intl.DateTimeFormat(
-    "en-CA",
-    {
-      timeZone:"Europe/Madrid"
-    }
-  ).format(new Date());
+return new Intl.DateTimeFormat(
+"en-CA",
+{
+timeZone:"Europe/Madrid"
 }
-/* ================= CAMBIAR PANTALLA ================= */
-function showScreen(name){
-  homeScreen.classList.remove("active");
-  matchesScreen.classList.remove("active");
-  analysisScreen.classList.remove("active");
-  betsScreen.classList.remove("active");
-  navHome.classList.remove("active");
-  navMatches.classList.remove("active");
-  navBets.classList.remove("active");
-  if(name === "home"){
-    homeScreen.classList.add("active");
-    navHome.classList.add("active");
-  }
-  if(name === "matches"){
-    matchesScreen.classList.add("active");
-    navMatches.classList.add("active");
-  }
-  if(name === "analysis"){
-    analysisScreen.classList.add("active");
-    navMatches.classList.add("active");
-  }
-  if(name === "bets"){
-    betsScreen.classList.add("active");
-    navBets.classList.add("active");
-  }
-  window.scrollTo({
-    top:0,
-    behavior:"instant"
-  });
+).format(new Date());
 }
-/* ================= HORA ================= */
-function formatTime(dateString){
-  if(!dateString){
-    return "--:--";
-  }
-  const date =
-    new Date(dateString);
-  if(Number.isNaN(date.getTime())){
-    return "--:--";
-  }
-  return date.toLocaleTimeString(
-    "es-ES",
-    {
-      hour:"2-digit",
-      minute:"2-digit",
-      timeZone:"Europe/Madrid"
-    }
-  );
-}
-/* ================= FECHA BONITA ================= */
 function formatDate(dateString){
-  const date =
-    new Date(dateString + "T12:00:00");
-  return date.toLocaleDateString(
-    "es-ES",
-    {
-      weekday:"long",
-      day:"numeric",
-      month:"long"
-    }
-  );
+const date =
+new Date(
+dateString +
+"T12:00:00"
+);
+return date.toLocaleDateString(
+"es-ES",
+{
+weekday:"long",
+day:"numeric",
+month:"long"
 }
-/* ================= ABRIR PARTIDOS ================= */
+);
+}
+function formatTime(dateString){
+if(!dateString){
+return "--:--";
+}
+const date =
+new Date(dateString);
+if(Number.isNaN(date.getTime())){
+return "--:--";
+}
+return date.toLocaleTimeString(
+"es-ES",
+{
+hour:"2-digit",
+minute:"2-digit",
+timeZone:"Europe/Madrid"
+}
+);
+}
+/* =========================================================
+   NAVEGACIÓN
+========================================================= */
+function showScreen(name){
+homeScreen.classList.remove("active");
+matchesScreen.classList.remove("active");
+analysisScreen.classList.remove("active");
+betsScreen.classList.remove("active");
+navHome.classList.remove("active");
+navMatches.classList.remove("active");
+navBets.classList.remove("active");
+if(name==="home"){
+homeScreen.classList.add("active");
+navHome.classList.add("active");
+}
+if(name==="matches"){
+matchesScreen.classList.add("active");
+navMatches.classList.add("active");
+}
+if(name==="analysis"){
+analysisScreen.classList.add("active");
+navMatches.classList.add("active");
+}
+if(name==="bets"){
+betsScreen.classList.add("active");
+navBets.classList.add("active");
+}
+window.scrollTo({
+top:0,
+behavior:"instant"
+});
+}
+/* =========================================================
+   PARTIDOS
+========================================================= */
 function openMatches(){
-  showScreen("matches");
-  changeMode("today");
+showScreen("matches");
+changeMode("today");
 }
-/* ================= CAMBIAR MODO ================= */
 function changeMode(mode){
-  currentMode =
-    mode;
-  tabToday.classList.remove("active");
-  tabRound.classList.remove("active");
-  tabCalendar.classList.remove("active");
-  if(mode === "today"){
-    tabToday.classList.add("active");
-    dateControls.style.display =
-      "none";
-    selectedDate =
-      getToday();
-    loadMatchesForDate(
-      selectedDate,
-      "today"
-    );
-  }
-  if(mode === "round"){
-    tabRound.classList.add("active");
-    dateControls.style.display =
-      "none";
-    /*
-      De momento cargamos la fecha actual.
-      La conexión específica de jornadas
-      se añadirá sobre esta base.
-    */
-    selectedDate =
-      getToday();
-    loadMatchesForDate(
-      selectedDate,
-      "round"
-    );
-  }
-  if(mode === "calendar"){
-    tabCalendar.classList.add("active");
-    dateControls.style.display =
-      "flex";
-    selectedDateElement.textContent =
-      formatDate(selectedDate);
-    loadMatchesForDate(
-      selectedDate,
-      "calendar"
-    );
-  }
+currentMode =
+mode;
+tabToday.classList.remove("active");
+tabRound.classList.remove("active");
+tabCalendar.classList.remove("active");
+if(mode==="today"){
+tabToday.classList.add("active");
+dateControls.style.display =
+"none";
+selectedDate =
+getToday();
+loadMatchesForDate(
+selectedDate,
+"today"
+);
 }
-/* ================= CARGAR POR FECHA ================= */
+if(mode==="round"){
+tabRound.classList.add("active");
+dateControls.style.display =
+"none";
+selectedDate =
+getToday();
+loadMatchesForDate(
+selectedDate,
+"round"
+);
+}
+if(mode==="calendar"){
+tabCalendar.classList.add("active");
+dateControls.style.display =
+"flex";
+selectedDateElement.textContent =
+formatDate(selectedDate);
+loadMatchesForDate(
+selectedDate,
+"calendar"
+);
+}
+}
+/* =========================================================
+   CARGAR PARTIDOS
+========================================================= */
 async function loadMatchesForDate(
-  date,
-  mode
+date,
+mode
 ){
-  matchesContainer.innerHTML =
-    '<div class="loading">⚽ Cargando partidos reales...</div>';
-  dateText.textContent =
-    mode === "today"
-      ? "Partidos de hoy · " + date
-      : mode === "round"
-        ? "Partidos de la jornada"
-        : "Calendario · " + formatDate(date);
-  try{
-    const url =
-      "https://betai-bice.vercel.app/api/fixtures?date=" +
-      encodeURIComponent(date);
-    const response =
-      await fetch(
-        url,
-        {
-          method:"GET",
-          headers:{
-            "Accept":"application/json"
-          },
-          cache:"no-store"
-        }
-      );
-    if(!response.ok){
-      throw new Error(
-        "HTTP " + response.status
-      );
-    }
-    const data =
-      await response.json();
-    console.log(
-      "BetAI API:",
-      data
-    );
-    if(!Array.isArray(data.partidos)){
-      throw new Error(
-        "La API no ha devuelto la lista de partidos."
-      );
-    }
-    allMatches =
-      data.partidos;
-    selectedLeague =
-      "Todas";
-    createLeagueFilters();
-    renderMatches();
-  }catch(error){
-    console.error(
-      "BetAI error:",
-      error
-    );
-    matchesContainer.innerHTML = "";
-    const card =
-      document.createElement("div");
-    card.className =
-      "card error";
-    const title =
-      document.createElement("strong");
-    title.textContent =
-      "No se pudieron cargar los partidos";
-    const message =
-      document.createElement("p");
-    message.textContent =
-      error.message ||
-      "Error desconocido";
-    card.appendChild(title);
-    card.appendChild(message);
-    matchesContainer.appendChild(card);
-  }
+matchesContainer.innerHTML =
+'<div class="loading">⚽ Cargando partidos reales...</div>';
+dateText.textContent =
+mode==="today"
+?
+"Partidos de hoy · "+date
+:
+mode==="round"
+?
+"Partidos de la jornada"
+:
+"Calendario · "+formatDate(date);
+try{
+const url =
+"https://betai-bice.vercel.app/api/fixtures?date="+
+encodeURIComponent(date);
+const response =
+await fetch(
+url,
+{
+method:"GET",
+headers:{
+"Accept":"application/json"
+},
+cache:"no-store"
 }
-/* ================= FILTROS ================= */
+);
+if(!response.ok){
+throw new Error(
+"HTTP "+response.status
+);
+}
+const data =
+await response.json();
+if(!Array.isArray(data.partidos)){
+throw new Error(
+"La API no ha devuelto la lista de partidos."
+);
+}
+allMatches =
+data.partidos;
+selectedLeague =
+"Todas";
+createLeagueFilters();
+renderMatches();
+}catch(error){
+console.error(error);
+matchesContainer.innerHTML =
+'<div class="card error">'+
+"<strong>No se pudieron cargar los partidos</strong>"+
+"<p>"+error.message+"</p>"+
+"</div>";
+}
+}
+/* =========================================================
+   FILTROS
+========================================================= */
 function createLeagueFilters(){
-  leagueFilters.innerHTML = "";
-  const leagues = [
-    "Todas"
-  ];
-  allMatches.forEach(
-    function(match){
-      const league =
-        match.liga;
-      if(
-        league &&
-        !leagues.includes(league)
-      ){
-        leagues.push(
-          league
-        );
-      }
-    }
-  );
-  leagues.forEach(
-    function(league){
-      const button =
-        document.createElement("button");
-      button.type =
-        "button";
-      button.className =
-        "filter";
-      if(
-        league === "Todas"
-      ){
-        button.classList.add(
-          "active"
-        );
-      }
-      button.textContent =
-        league;
-      button.addEventListener(
-        "click",
-        function(){
-          selectedLeague =
-            league;
-          document
-            .querySelectorAll(".filter")
-            .forEach(
-              function(item){
-                item.classList.remove(
-                  "active"
-                );
-              }
-            );
-          button.classList.add(
-            "active"
-          );
-          renderMatches();
-        }
-      );
-      leagueFilters.appendChild(
-        button
-      );
-    }
-  );
-}
-/* ================= MOSTRAR PARTIDOS ================= */
-function renderMatches(){
-  matchesContainer.innerHTML =
-    "";
-  let matches =
-    allMatches;
-  if(
-    selectedLeague !== "Todas"
-  ){
-    matches =
-      allMatches.filter(
-        function(match){
-          return (
-            match.liga ===
-            selectedLeague
-          );
-        }
-      );
-  }
-  if(matches.length === 0){
-    const card =
-      document.createElement("div");
-    card.className =
-      "card";
-    const message =
-      document.createElement("div");
-    message.className =
-      "loading";
-    message.textContent =
-      "No hay partidos disponibles para esta selección.";
-    card.appendChild(
-      message
-    );
-    matchesContainer.appendChild(
-      card
-    );
-    return;
-  }
-  let currentLeague =
-    "";
-  matches.forEach(
-    function(match){
-      if(
-        match.liga !==
-        currentLeague
-      ){
-        currentLeague =
-          match.liga;
-        const title =
-          document.createElement("div");
-        title.className =
-          "league-title";
-        title.textContent =
-          (match.bandera || "⚽") +
-          " " +
-          (match.liga || "Competición");
-        matchesContainer.appendChild(
-          title
-        );
-      }
-      const card =
-        document.createElement("div");
-      card.className =
-        "card";
-      const row =
-        document.createElement("div");
-      row.className =
-        "match";
-      const teams =
-        document.createElement("div");
-      teams.className =
-        "teams";
-      teams.appendChild(
-        createTeamLine(
-          match.local,
-          match.logoLocal
-        )
-      );
-      teams.appendChild(
-        createTeamLine(
-          match.visitante,
-          match.logoVisitante
-        )
-      );
-      const status =
-        document.createElement("div");
-      status.className =
-        "status";
-      status.textContent =
-        match.estadoLargo ||
-        match.estado ||
-        "";
-      teams.appendChild(
-        status
-      );
-      const right =
-        document.createElement("div");
-      right.className =
-        "time";
-      const time =
-        document.createElement("div");
-      time.textContent =
-        formatTime(
-          match.fecha
-        );
-      const analyse =
-        document.createElement("button");
-      analyse.type =
-        "button";
-      analyse.className =
-        "analyse";
-      analyse.textContent =
-        "Analizar";
-      analyse.addEventListener(
-        "click",
-        function(){
-          openMatch(
-            match
-          );
-        }
-      );
-      right.appendChild(
-        time
-      );
-      right.appendChild(
-        analyse
-      );
-      row.appendChild(
-        teams
-      );
-      row.appendChild(
-        right
-      );
-      card.appendChild(
-        row
-      );
-      matchesContainer.appendChild(
-        card
-      );
-    }
-  );
-}
-/* ================= EQUIPO ================= */
-function createTeamLine(
-  name,
-  logo
+leagueFilters.innerHTML = "";
+const leagues =
+["Todas"];
+allMatches.forEach(
+function(match){
+if(
+match.liga &&
+!leagues.includes(match.liga)
 ){
-  const line =
-    document.createElement("div");
-  line.className =
-    "team-line";
-  if(logo){
-    const image =
-      document.createElement("img");
-    image.className =
-      "logo-team";
-    image.src =
-      logo;
-    image.alt =
-      "";
-    image.onerror =
-      function(){
-        image.style.display =
-          "none";
-      };
-    line.appendChild(
-      image
-    );
-  }
-  const text =
-    document.createElement("span");
-  text.className =
-    "team-name";
-  text.textContent =
-    name ||
-    "Equipo";
-  line.appendChild(
-    text
-  );
-  return line;
+leagues.push(
+match.liga
+);
 }
-/* ================= ANÁLISIS ================= */
-function openMatch(match){
-  document.getElementById(
-    "analysisTitle"
-  ).textContent =
-    (match.local || "Local") +
-    " vs " +
-    (match.visitante || "Visitante");
-  document.getElementById(
-    "analysisInfo"
-  ).textContent =
-    (match.liga || "Fútbol") +
-    " · " +
-    formatTime(
-      match.fecha
-    );
-  document.getElementById(
-    "analysisHome"
-  ).textContent =
-    match.local ||
-    "-";
-  document.getElementById(
-    "analysisAway"
-  ).textContent =
-    match.visitante ||
-    "-";
-  showScreen(
-    "analysis"
-  );
+});
+leagues.forEach(
+function(league){
+const button =
+document.createElement("button");
+button.type =
+"button";
+button.className =
+"filter";
+if(
+league==="Todas"
+){
+button.classList.add(
+"active"
+);
 }
-/* ================= CAMBIAR DÍA ================= */
-function changeDate(days){
-  const date =
-    new Date(
-      selectedDate +
-      "T12:00:00"
-    );
-  date.setDate(
-    date.getDate() +
-    days
-  );
-  selectedDate =
-    date.toISOString()
-      .slice(0,10);
-  selectedDateElement.textContent =
-    formatDate(
-      selectedDate
-    );
-  loadMatchesForDate(
-    selectedDate,
-    "calendar"
-  );
-}
-/* ================= EVENTOS ================= */
+button.textContent =
+league;
+button.addEventListener(
+"click",
+function(){
+selectedLeague =
+league;
 document
-  .getElementById("openMatchesHome")
-  .addEventListener(
-    "click",
-    openMatches
-  );
+.querySelectorAll(".filter")
+.forEach(
+function(item){
+item.classList.remove(
+"active"
+);
+});
+button.classList.add(
+"active"
+);
+renderMatches();
+});
+leagueFilters.appendChild(
+button
+);
+});
+}
+/* =========================================================
+   MOSTRAR PARTIDOS
+========================================================= */
+function renderMatches(){
+matchesContainer.innerHTML =
+"";
+let matches =
+allMatches;
+if(
+selectedLeague!=="Todas"
+){
+matches =
+allMatches.filter(
+function(match){
+return (
+match.liga ===
+selectedLeague
+);
+});
+}
+if(matches.length===0){
+matchesContainer.innerHTML =
+'<div class="card">'+
+'<div class="loading">'+
+"No hay partidos disponibles para esta selección."+
+"</div>"+
+"</div>";
+return;
+}
+let currentLeague =
+"";
+matches.forEach(
+function(match){
+if(
+match.liga !==
+currentLeague
+){
+currentLeague =
+match.liga;
+const title =
+document.createElement("div");
+title.className =
+"league-title";
+title.textContent =
+(match.bandera || "⚽")+
+" "+
+(match.liga || "Competición");
+matchesContainer.appendChild(
+title
+);
+}
+const card =
+document.createElement("div");
+card.className =
+"card";
+const row =
+document.createElement("div");
+row.className =
+"match";
+const teams =
+document.createElement("div");
+teams.className =
+"teams";
+teams.appendChild(
+createTeamLine(
+match.local,
+match.logoLocal
+)
+);
+teams.appendChild(
+createTeamLine(
+match.visitante,
+match.logoVisitante
+)
+);
+const status =
+document.createElement("div");
+status.className =
+"status";
+status.textContent =
+match.estadoLargo ||
+match.estado ||
+"";
+teams.appendChild(
+status
+);
+const right =
+document.createElement("div");
+right.className =
+"time";
+const time =
+document.createElement("div");
+time.textContent =
+formatTime(
+match.fecha
+);
+const analyse =
+document.createElement("button");
+analyse.type =
+"button";
+analyse.className =
+"analyse";
+analyse.textContent =
+"Analizar";
+analyse.addEventListener(
+"click",
+function(){
+openMatch(
+match
+);
+});
+right.appendChild(time);
+right.appendChild(
+analyse
+);
+row.appendChild(
+teams
+);
+row.appendChild(
+right
+);
+card.appendChild(
+row
+);
+matchesContainer.appendChild(
+card
+);
+});
+}
+/* =========================================================
+   EQUIPO
+========================================================= */
+function createTeamLine(
+name,
+logo
+){
+const line =
+document.createElement("div");
+line.className =
+"team-line";
+if(logo){
+const image =
+document.createElement("img");
+image.className =
+"logo-team";
+image.src =
+logo;
+image.alt =
+"";
+image.onerror =
+function(){
+image.style.display =
+"none";
+};
+line.appendChild(
+image
+);
+}
+const text =
+document.createElement("span");
+text.className =
+"team-name";
+text.textContent =
+name ||
+"Equipo";
+line.appendChild(
+text
+);
+return line;
+}
+/* =========================================================
+   ANÁLISIS
+========================================================= */
+async function openMatch(match){
+showScreen(
+"analysis"
+);
+document.getElementById(
+"analysisTitle"
+).textContent =
+"Análisis";
+document.getElementById(
+"analysisInfo"
+).textContent =
+"Cargando estadísticas reales...";
+document.getElementById(
+"analysisHomeName"
+).textContent =
+match.local ||
+"Local";
+document.getElementById(
+"analysisAwayName"
+).textContent =
+match.visitante ||
+"Visitante";
+document.getElementById(
+"analysisHomeLogo"
+).src =
+match.logoLocal ||
+"";
+document.getElementById(
+"analysisAwayLogo"
+).src =
+match.logoVisitante ||
+"";
+document.getElementById(
+"marketsContainer"
+).innerHTML =
+'<div class="card loading">🎯 Calculando mercados...</div>';
+document.getElementById(
+"goalsStats"
+).innerHTML =
+'<div class="loading">Cargando...</div>';
+document.getElementById(
+"cornersStats"
+).innerHTML =
+'<div class="loading">Cargando...</div>';
+document.getElementById(
+"bttsStats"
+).innerHTML =
+'<div class="loading">Cargando...</div>';
+document.getElementById(
+"cardsStats"
+).innerHTML =
+'<div class="loading">Cargando...</div>';
+document.getElementById(
+"formStats"
+).innerHTML =
+'<div class="loading">Cargando...</div>';
+document.getElementById(
+"h2hStats"
+).innerHTML =
+'<div class="loading">Cargando...</div>';
+document.getElementById(
+"homePlayers"
+).innerHTML =
+'<div class="loading">Cargando...</div>';
+document.getElementById(
+"awayPlayers"
+).innerHTML =
+'<div class="loading">Cargando...</div>';
+try{
+const response =
+await fetch(
+"https://betai-bice.vercel.app/api/analysis?fixture="+
+encodeURIComponent(
+match.id
+),
+{
+method:"GET",
+headers:{
+"Accept":"application/json"
+},
+cache:"no-store"
+}
+);
+if(!response.ok){
+throw new Error(
+"HTTP "+response.status
+);
+}
+const data =
+await response.json();
+if(!data.ok){
+throw new Error(
+data.error ||
+"Error en el análisis"
+);
+}
+renderAnalysis(
+data
+);
+}catch(error){
+console.error(
+"Analysis error:",
+error
+);
+document.getElementById(
+"analysisInfo"
+).textContent =
+"Error al cargar el análisis";
+document.getElementById(
+"marketsContainer"
+).innerHTML =
+'<div class="card error">'+
+"<strong>No se pudo cargar el análisis</strong>"+
+"<p>"+error.message+"</p>"+
+"</div>";
+}
+}
+/* =========================================================
+   RENDER ANÁLISIS
+========================================================= */
+function renderAnalysis(
+data
+){
+const local =
+data.equipos.local;
+const visitante =
+data.equipos.visitante;
+document.getElementById(
+"analysisTitle"
+).textContent =
+"Análisis";
+document.getElementById(
+"analysisInfo"
+).textContent =
+(data.fixture.liga || "Fútbol")+
+" · "+
+formatTime(
+data.fixture.fecha
+);
+document.getElementById(
+"analysisHomeName"
+).textContent =
+local.nombre;
+document.getElementById(
+"analysisAwayName"
+).textContent =
+visitante.nombre;
+/* MERCADOS */
+renderMarkets(
+data.mercadosDestacados
+);
+/* GOLES */
+renderGoals(
+data.goles,
+local.nombre,
+visitante.nombre
+);
+/* CÓRNERS */
+renderCorners(
+data.corners
+);
+/* BTTS */
+renderBTTS(
+data.btts
+);
+/* TARJETAS */
+renderCards(
+data.tarjetas
+);
+/* FORMA */
+renderForm(
+data.forma,
+local.nombre,
+visitante.nombre
+);
+/* H2H */
+renderH2H(
+data.h2h
+);
+/* JUGADORES */
+renderPlayers(
+data.jugadores
+);
+}
+/* =========================================================
+   MERCADOS
+========================================================= */
+function renderMarkets(
+markets
+){
+const container =
+document.getElementById(
+"marketsContainer"
+);
+if(
+!markets ||
+!markets.length
+){
+container.innerHTML =
+'<div class="card">'+
+'<div class="note">'+
+"No hay suficientes datos para calcular mercados destacados."+
+"</div>"+
+"</div>";
+return;
+}
+container.innerHTML =
+"";
+markets.forEach(
+function(item){
+const card =
+document.createElement("div");
+card.className =
+"market-card";
+card.innerHTML =
+'<div class="market-title">'+
+escapeHTML(
+item.market
+)+
+"</div>"+
+'<div class="market-value">'+
+escapeHTML(
+String(item.probability)
+)+
+"%"+
+"</div>"+
+'<div class="market-small">'+
+"Probabilidad estadística estimada"+
+"</div>";
+container.appendChild(
+card
+);
+});
+}
+/* =========================================================
+   GOLES
+========================================================= */
+function renderGoals(
+goals,
+home,
+away
+){
+const container =
+document.getElementById(
+"goalsStats"
+);
+container.innerHTML =
+statRow(
+goals.local.aFavor,
+"Prom. goles a favor",
+goals.visitante.aFavor
+)+
+statRow(
+goals.local.enContra,
+"Prom. goles recibidos",
+goals.visitante.enContra
+)+
+statRow(
+goals.local.recientes,
+"Últimos partidos",
+goals.visitante.recientes
+)+
+statRow(
+goals.local.recientesRecibidos,
+"Últimos recibidos",
+goals.visitante.recientesRecibidos
+)+
+'<p class="note">Los promedios corresponden a los datos disponibles de la temporada/últimos partidos.</p>';
+}
+/* =========================================================
+   CÓRNERS
+========================================================= */
+function renderCorners(
+corners
+){
+const container =
+document.getElementById(
+"cornersStats"
+);
+container.innerHTML =
+statRow(
+corners.local,
+"Córners por partido",
+corners.visitante
+)+
+statRow(
+corners.localPrimeraParte,
+"1.ª parte",
+corners.visitantePrimeraParte
+)+
+statRow(
+corners.localSegundaParte,
+"2.ª parte",
+corners.visitanteSegundaParte
+)+
+'<p class="note">Cuando la competición no proporciona estos datos, BetAI los mostrará como no disponibles en lugar de estimarlos sin base.</p>';
+}
+/* =========================================================
+   BTTS
+========================================================= */
+function renderBTTS(
+btts
+){
+const container =
+document.getElementById(
+"bttsStats"
+);
+container.innerHTML =
+statRow(
+formatPercent(
+btts.localReciente
+),
+"BTTS reciente",
+formatPercent(
+btts.visitanteReciente
+)
+)+
+'<div class="stat-row">'+
+'<div class="stat-home">-</div>'+
+'<div class="stat-name">H2H</div>'+
+'<div class="stat-away">'+
+formatPercent(
+btts.h2h
+)+
+"</div>"+
+"</div>";
+}
+/* =========================================================
+   TARJETAS
+========================================================= */
+function renderCards(
+cards
+){
+const container =
+document.getElementById(
+"cardsStats"
+);
+container.innerHTML =
+statRow(
+formatValue(
+cards.local
+),
+"Amarillas / partido",
+formatValue(
+cards.visitante
+)
+)+
+statRow(
+cards.localAmarillas,
+"Amarillas temporada",
+cards.visitanteAmarillas
+)+
+statRow(
+cards.localRojas,
+"Rojas temporada",
+cards.visitanteRojas
+);
+}
+/* =========================================================
+   FORMA
+========================================================= */
+function renderForm(
+form,
+home,
+away
+){
+const container =
+document.getElementById(
+"formStats"
+);
+container.innerHTML =
+'<div class="form-team">'+
+'<div class="form-title">'+
+escapeHTML(home)+
+"</div>"+
+'<div class="form-line">'+
+"Victorias: "+
+formatValue(form.local.victorias)+
+"<br>"+
+"Empates: "+
+formatValue(form.local.empates)+
+"<br>"+
+"Derrotas: "+
+formatValue(form.local.derrotas)+
+"</div>"+
+"</div>"+
+'<div class="form-team">'+
+'<div class="form-title">'+
+escapeHTML(away)+
+"</div>"+
+'<div class="form-line">'+
+"Victorias: "+
+formatValue(form.visitante.victorias)+
+"<br>"+
+"Empates: "+
+formatValue(form.visitante.empates)+
+"<br>"+
+"Derrotas: "+
+formatValue(form.visitante.derrotas)+
+"</div>"+
+"</div>";
+}
+/* =========================================================
+   H2H
+========================================================= */
+function renderH2H(
+h2h
+){
+const container =
+document.getElementById(
+"h2hStats"
+);
+container.innerHTML =
+'<div class="stat-row">'+
+'<div class="stat-home">'+
+formatValue(h2h.partidos)+
+"</div>"+
+'<div class="stat-name">Partidos</div>'+
+'<div class="stat-away">Últimos 10</div>'+
+"</div>"+
+statRow(
+h2h.promedioGoles,
+"Prom. goles",
+"-"
+)+
+statRow(
+formatPercent(h2h.btts),
+"BTTS",
+"-"
+)+
+statRow(
+h2h.victoriasLocal,
+"Victorias local",
+h2h.victoriasVisitante
+)+
+'<div class="stat-row">'+
+'<div class="stat-home">-</div>'+
+'<div class="stat-name">Empates</div>'+
+'<div class="stat-away">'+
+formatValue(h2h.empates)+
+"</div>"+
+"</div>";
+}
+/* =========================================================
+   JUGADORES
+========================================================= */
+function renderPlayers(
+players
+){
+renderPlayerList(
+"homePlayers",
+players.local
+);
+renderPlayerList(
+"awayPlayers",
+players.visitante
+);
+}
+function renderPlayerList(
+elementId,
+players
+){
+const container =
+document.getElementById(
+elementId
+);
+container.innerHTML =
+"";
+if(
+!players ||
+!players.length
+){
+container.innerHTML =
+'<div class="note">No hay estadísticas individuales disponibles.</div>';
+return;
+}
+players.forEach(
+function(player){
+const row =
+document.createElement("div");
+row.className =
+"player";
+const image =
+document.createElement("img");
+image.src =
+player.photo ||
+"";
+image.alt =
+"";
+const middle =
+document.createElement("div");
+middle.innerHTML =
+'<div class="player-name">'+
+escapeHTML(
+player.name
+)+
+"</div>"+
+'<div class="player-info">'+
+escapeHTML(
+player.position ||
+""
+)+
+"</div>";
+const stats =
+document.createElement("div");
+stats.className =
+"player-stats";
+stats.innerHTML =
+"⚽ "+
+formatValue(
+player.goals
+)+
+" · " +
+"🅰️ "+
+formatValue(
+player.assists
+)+
+"<br>"+
+"⭐ "+
+formatValue(
+player.rating
+);
+row.appendChild(
+image
+);
+row.appendChild(
+middle
+);
+row.appendChild(
+stats
+);
+container.appendChild(
+row
+);
+});
+}
+/* =========================================================
+   HELPERS UI
+========================================================= */
+function statRow(
+home,
+name,
+away
+){
+return (
+'<div class="stat-row">'+
+'<div class="stat-home">'+
+formatValue(home)+
+"</div>"+
+'<div class="stat-name">'+
+escapeHTML(name)+
+"</div>"+
+'<div class="stat-away">'+
+formatValue(away)+
+"</div>"+
+"</div>"
+);
+}
+function formatValue(
+value
+){
+if(
+value === null ||
+value === undefined ||
+value === ""
+){
+return "N/D";
+}
+return escapeHTML(
+String(value)
+);
+}
+function formatPercent(
+value
+){
+if(
+value === null ||
+value === undefined
+){
+return "N/D";
+}
+return (
+escapeHTML(
+String(value)
+)+
+"%"
+);
+}
+function escapeHTML(
+value
+){
+return String(
+value || ""
+)
+.replaceAll(
+"&",
+"&amp;"
+)
+.replaceAll(
+"<",
+"&lt;"
+)
+.replaceAll(
+">",
+"&gt;"
+)
+.replaceAll(
+'"',
+"&quot;"
+)
+.replaceAll(
+"'",
+"&#039;"
+);
+}
+/* =========================================================
+   FECHA CALENDARIO
+========================================================= */
+function changeDate(
+days
+){
+const date =
+new Date(
+selectedDate +
+"T12:00:00"
+);
+date.setDate(
+date.getDate() +
+days
+);
+selectedDate =
+date.toISOString()
+.slice(
+0,
+10
+);
+selectedDateElement.textContent =
+formatDate(
+selectedDate
+);
+loadMatchesForDate(
+selectedDate,
+"calendar"
+);
+}
+/* =========================================================
+   EVENTOS
+========================================================= */
+document
+.getElementById("openMatchesHome")
+.addEventListener(
+"click",
+openMatches
+);
 navHome.addEventListener(
-  "click",
-  function(){
-    showScreen(
-      "home"
-    );
-  }
+"click",
+function(){
+showScreen(
+"home"
+);
+}
 );
 navMatches.addEventListener(
-  "click",
-  openMatches
+"click",
+openMatches
 );
 navBets.addEventListener(
-  "click",
-  function(){
-    showScreen(
-      "bets"
-    );
-  }
+"click",
+function(){
+showScreen(
+"bets"
+);
+}
 );
 document
-  .getElementById("backToMatches")
-  .addEventListener(
-    "click",
-    function(){
-      showScreen(
-        "matches"
-      );
-    }
-  );
+.getElementById("backToMatches")
+.addEventListener(
+"click",
+function(){
+showScreen(
+"matches"
+);
+}
+);
 tabToday.addEventListener(
-  "click",
-  function(){
-    changeMode(
-      "today"
-    );
-  }
+"click",
+function(){
+changeMode(
+"today"
+);
+}
 );
 tabRound.addEventListener(
-  "click",
-  function(){
-    changeMode(
-      "round"
-    );
-  }
+"click",
+function(){
+changeMode(
+"round"
+);
+}
 );
 tabCalendar.addEventListener(
-  "click",
-  function(){
-    changeMode(
-      "calendar"
-    );
-  }
+"click",
+function(){
+changeMode(
+"calendar"
+);
+}
 );
 document
-  .getElementById("previousDay")
-  .addEventListener(
-    "click",
-    function(){
-      changeDate(
-        -1
-      );
-    }
-  );
+.getElementById("previousDay")
+.addEventListener(
+"click",
+function(){
+changeDate(
+-1
+);
+}
+);
 document
-  .getElementById("nextDay")
-  .addEventListener(
-    "click",
-    function(){
-      changeDate(
-        1
-      );
-    }
-  );
-/* ================= FIN ================= */
+.getElementById("nextDay")
+.addEventListener(
+"click",
+function(){
+changeDate(
+1
+);
+}
+);
 </script>
 </body>
 </html>
