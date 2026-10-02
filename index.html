@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="theme-color" content="#080c16">
 <title>BetAI</title>
 <style>
@@ -27,7 +27,7 @@ button{
   width:100%;
   max-width:720px;
   min-height:100vh;
-  margin:0 auto;
+  margin:auto;
   padding-bottom:100px;
 }
 .header{
@@ -116,12 +116,33 @@ h1{
   padding:12px 14px;
   margin-top:14px;
 }
-.secondary-button{
+.back{
   border:0;
   background:#172033;
   color:#fff;
   border-radius:10px;
-  padding:10px 13px;
+  padding:9px 12px;
+  margin-bottom:8px;
+}
+.tabs{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:7px;
+  margin-bottom:12px;
+}
+.tab{
+  border:1px solid #253047;
+  background:#111827;
+  color:#cbd5e1;
+  border-radius:12px;
+  padding:10px 5px;
+  font-size:12px;
+  font-weight:700;
+}
+.tab.active{
+  background:#6ee7b7;
+  color:#062017;
+  border-color:#6ee7b7;
 }
 .filters{
   display:flex;
@@ -145,11 +166,25 @@ h1{
   border-color:#6ee7b7;
   font-weight:800;
 }
-.league-title{
-  color:#6ee7b7;
-  font-size:13px;
-  font-weight:800;
-  margin:18px 0 8px;
+.date-controls{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:12px;
+}
+.date-button{
+  border:1px solid #253047;
+  background:#111827;
+  color:#fff;
+  border-radius:10px;
+  padding:9px 11px;
+}
+.date-label{
+  flex:1;
+  text-align:center;
+  color:#cbd5e1;
+  font-size:12px;
+  font-weight:700;
 }
 .match{
   display:flex;
@@ -201,6 +236,12 @@ h1{
   padding:8px 10px;
   margin-top:7px;
 }
+.league-title{
+  color:#6ee7b7;
+  font-size:13px;
+  font-weight:800;
+  margin:18px 0 8px;
+}
 .loading{
   text-align:center;
   padding:35px 10px;
@@ -212,14 +253,6 @@ h1{
 }
 .error strong{
   color:#fecaca;
-}
-.back{
-  border:0;
-  background:#172033;
-  color:#fff;
-  border-radius:10px;
-  padding:9px 12px;
-  margin-bottom:8px;
 }
 .bottom{
   position:fixed;
@@ -233,7 +266,7 @@ h1{
 .bottom-inner{
   width:100%;
   max-width:720px;
-  margin:0 auto;
+  margin:auto;
   display:grid;
   grid-template-columns:repeat(3,1fr);
   padding:8px 10px calc(8px + env(safe-area-inset-bottom));
@@ -265,7 +298,7 @@ h1{
   </div>
   <div class="demo">LIVE DATA</div>
 </header>
-<!-- ==================== INICIO ==================== -->
+<!-- ================= INICIO ================= -->
 <section id="homeScreen" class="screen active">
   <div class="content">
     <h1>Panel principal</h1>
@@ -296,14 +329,62 @@ h1{
     </div>
   </div>
 </section>
-<!-- ==================== PARTIDOS ==================== -->
+<!-- ================= PARTIDOS ================= -->
 <section id="matchesScreen" class="screen">
   <div class="content">
     <h1>Partidos</h1>
     <p id="dateText" class="intro">
       Partidos reales de BetAI
     </p>
-    <div id="leagueFilters" class="filters"></div>
+    <!-- TRES MODOS -->
+    <div class="tabs">
+      <button
+        id="tabToday"
+        class="tab active"
+        type="button">
+        📅 Hoy
+      </button>
+      <button
+        id="tabRound"
+        class="tab"
+        type="button">
+        🏆 Jornada
+      </button>
+      <button
+        id="tabCalendar"
+        class="tab"
+        type="button">
+        📋 Calendario
+      </button>
+    </div>
+    <!-- CONTROLES CALENDARIO -->
+    <div
+      id="dateControls"
+      class="date-controls"
+      style="display:none;">
+      <button
+        id="previousDay"
+        class="date-button"
+        type="button">
+        ←
+      </button>
+      <div
+        id="selectedDate"
+        class="date-label">
+      </div>
+      <button
+        id="nextDay"
+        class="date-button"
+        type="button">
+        →
+      </button>
+    </div>
+    <!-- FILTROS -->
+    <div
+      id="leagueFilters"
+      class="filters">
+    </div>
+    <!-- PARTIDOS -->
     <div id="matchesContainer">
       <div class="loading">
         Pulsa Partidos para cargar los encuentros.
@@ -311,7 +392,7 @@ h1{
     </div>
   </div>
 </section>
-<!-- ==================== ANÁLISIS ==================== -->
+<!-- ================= ANÁLISIS ================= -->
 <section id="analysisScreen" class="screen">
   <div class="content">
     <button
@@ -323,7 +404,10 @@ h1{
     <h1 id="analysisTitle">
       Partido
     </h1>
-    <p id="analysisInfo" class="intro"></p>
+    <p
+      id="analysisInfo"
+      class="intro">
+    </p>
     <div class="card">
       <div class="section">
         Partido
@@ -331,11 +415,19 @@ h1{
       <div class="grid">
         <div>
           <div class="label">Local</div>
-          <div id="analysisHome" class="number">-</div>
+          <div
+            id="analysisHome"
+            class="number">
+            -
+          </div>
         </div>
         <div>
           <div class="label">Visitante</div>
-          <div id="analysisAway" class="number">-</div>
+          <div
+            id="analysisAway"
+            class="number">
+            -
+          </div>
         </div>
       </div>
     </div>
@@ -345,8 +437,8 @@ h1{
       </div>
       <p class="note">
         Aquí construiremos el análisis estadístico utilizando
-        forma reciente, goles, local/visitante, xG, enfrentamientos
-        directos y otros datos.
+        forma reciente, goles, local/visitante, xG,
+        enfrentamientos directos y otros datos.
       </p>
     </div>
     <div class="card">
@@ -365,7 +457,7 @@ h1{
     </div>
   </div>
 </section>
-<!-- ==================== APUESTAS ==================== -->
+<!-- ================= APUESTAS ================= -->
 <section id="betsScreen" class="screen">
   <div class="content">
     <h1>Mis apuestas</h1>
@@ -383,7 +475,7 @@ h1{
     </div>
   </div>
 </section>
-<!-- ==================== NAVEGACIÓN ==================== -->
+<!-- ================= NAVEGACIÓN ================= -->
 <nav class="bottom">
   <div class="bottom-inner">
     <button
@@ -413,16 +505,13 @@ h1{
 <script>
 /* =========================================================
    BETAI
-   Navegación + partidos reales
 ========================================================= */
-/* =========================
-   VARIABLES
-========================= */
+/* ================= VARIABLES ================= */
 let allMatches = [];
 let selectedLeague = "Todas";
-/* =========================
-   ELEMENTOS
-========================= */
+let currentMode = "today";
+let selectedDate = getToday();
+/* ================= ELEMENTOS ================= */
 const homeScreen =
   document.getElementById("homeScreen");
 const matchesScreen =
@@ -443,41 +532,17 @@ const leagueFilters =
   document.getElementById("leagueFilters");
 const dateText =
   document.getElementById("dateText");
-/* =========================
-   CAMBIAR PANTALLA
-========================= */
-function showScreen(screenName){
-  homeScreen.classList.remove("active");
-  matchesScreen.classList.remove("active");
-  analysisScreen.classList.remove("active");
-  betsScreen.classList.remove("active");
-  navHome.classList.remove("active");
-  navMatches.classList.remove("active");
-  navBets.classList.remove("active");
-  if(screenName === "home"){
-    homeScreen.classList.add("active");
-    navHome.classList.add("active");
-  }
-  if(screenName === "matches"){
-    matchesScreen.classList.add("active");
-    navMatches.classList.add("active");
-  }
-  if(screenName === "analysis"){
-    analysisScreen.classList.add("active");
-    navMatches.classList.add("active");
-  }
-  if(screenName === "bets"){
-    betsScreen.classList.add("active");
-    navBets.classList.add("active");
-  }
-  window.scrollTo({
-    top:0,
-    behavior:"instant"
-  });
-}
-/* =========================
-   FECHA ESPAÑA
-========================= */
+const dateControls =
+  document.getElementById("dateControls");
+const selectedDateElement =
+  document.getElementById("selectedDate");
+const tabToday =
+  document.getElementById("tabToday");
+const tabRound =
+  document.getElementById("tabRound");
+const tabCalendar =
+  document.getElementById("tabCalendar");
+/* ================= FECHA ACTUAL ================= */
 function getToday(){
   return new Intl.DateTimeFormat(
     "en-CA",
@@ -486,9 +551,37 @@ function getToday(){
     }
   ).format(new Date());
 }
-/* =========================
-   HORA ESPAÑA
-========================= */
+/* ================= CAMBIAR PANTALLA ================= */
+function showScreen(name){
+  homeScreen.classList.remove("active");
+  matchesScreen.classList.remove("active");
+  analysisScreen.classList.remove("active");
+  betsScreen.classList.remove("active");
+  navHome.classList.remove("active");
+  navMatches.classList.remove("active");
+  navBets.classList.remove("active");
+  if(name === "home"){
+    homeScreen.classList.add("active");
+    navHome.classList.add("active");
+  }
+  if(name === "matches"){
+    matchesScreen.classList.add("active");
+    navMatches.classList.add("active");
+  }
+  if(name === "analysis"){
+    analysisScreen.classList.add("active");
+    navMatches.classList.add("active");
+  }
+  if(name === "bets"){
+    betsScreen.classList.add("active");
+    navBets.classList.add("active");
+  }
+  window.scrollTo({
+    top:0,
+    behavior:"instant"
+  });
+}
+/* ================= HORA ================= */
 function formatTime(dateString){
   if(!dateString){
     return "--:--";
@@ -507,34 +600,98 @@ function formatTime(dateString){
     }
   );
 }
-/* =========================
-   ABRIR PARTIDOS
-========================= */
+/* ================= FECHA BONITA ================= */
+function formatDate(dateString){
+  const date =
+    new Date(dateString + "T12:00:00");
+  return date.toLocaleDateString(
+    "es-ES",
+    {
+      weekday:"long",
+      day:"numeric",
+      month:"long"
+    }
+  );
+}
+/* ================= ABRIR PARTIDOS ================= */
 function openMatches(){
   showScreen("matches");
-  loadMatches();
+  changeMode("today");
 }
-/* =========================
-   CARGAR PARTIDOS
-========================= */
-async function loadMatches(){
+/* ================= CAMBIAR MODO ================= */
+function changeMode(mode){
+  currentMode =
+    mode;
+  tabToday.classList.remove("active");
+  tabRound.classList.remove("active");
+  tabCalendar.classList.remove("active");
+  if(mode === "today"){
+    tabToday.classList.add("active");
+    dateControls.style.display =
+      "none";
+    selectedDate =
+      getToday();
+    loadMatchesForDate(
+      selectedDate,
+      "today"
+    );
+  }
+  if(mode === "round"){
+    tabRound.classList.add("active");
+    dateControls.style.display =
+      "none";
+    /*
+      De momento cargamos la fecha actual.
+      La conexión específica de jornadas
+      se añadirá sobre esta base.
+    */
+    selectedDate =
+      getToday();
+    loadMatchesForDate(
+      selectedDate,
+      "round"
+    );
+  }
+  if(mode === "calendar"){
+    tabCalendar.classList.add("active");
+    dateControls.style.display =
+      "flex";
+    selectedDateElement.textContent =
+      formatDate(selectedDate);
+    loadMatchesForDate(
+      selectedDate,
+      "calendar"
+    );
+  }
+}
+/* ================= CARGAR POR FECHA ================= */
+async function loadMatchesForDate(
+  date,
+  mode
+){
   matchesContainer.innerHTML =
     '<div class="loading">⚽ Cargando partidos reales...</div>';
-  const today = getToday();
   dateText.textContent =
-    "Partidos de hoy · " + today;
+    mode === "today"
+      ? "Partidos de hoy · " + date
+      : mode === "round"
+        ? "Partidos de la jornada"
+        : "Calendario · " + formatDate(date);
   try{
     const url =
       "https://betai-bice.vercel.app/api/fixtures?date=" +
-      encodeURIComponent(today);
+      encodeURIComponent(date);
     const response =
-      await fetch(url, {
-        method:"GET",
-        headers:{
-          "Accept":"application/json"
-        },
-        cache:"no-store"
-      });
+      await fetch(
+        url,
+        {
+          method:"GET",
+          headers:{
+            "Accept":"application/json"
+          },
+          cache:"no-store"
+        }
+      );
     if(!response.ok){
       throw new Error(
         "HTTP " + response.status
@@ -559,13 +716,13 @@ async function loadMatches(){
     renderMatches();
   }catch(error){
     console.error(
-      "Error BetAI:",
+      "BetAI error:",
       error
     );
     matchesContainer.innerHTML = "";
-    const errorCard =
+    const card =
       document.createElement("div");
-    errorCard.className =
+    card.className =
       "card error";
     const title =
       document.createElement("strong");
@@ -576,76 +733,83 @@ async function loadMatches(){
     message.textContent =
       error.message ||
       "Error desconocido";
-    errorCard.appendChild(title);
-    errorCard.appendChild(message);
-    matchesContainer.appendChild(
-      errorCard
-    );
+    card.appendChild(title);
+    card.appendChild(message);
+    matchesContainer.appendChild(card);
   }
 }
-/* =========================
-   FILTROS DE LIGAS
-========================= */
+/* ================= FILTROS ================= */
 function createLeagueFilters(){
   leagueFilters.innerHTML = "";
   const leagues = [
     "Todas"
   ];
-  allMatches.forEach(function(match){
-    const league =
-      match.liga;
-    if(
-      league &&
-      !leagues.includes(league)
-    ){
-      leagues.push(league);
+  allMatches.forEach(
+    function(match){
+      const league =
+        match.liga;
+      if(
+        league &&
+        !leagues.includes(league)
+      ){
+        leagues.push(
+          league
+        );
+      }
     }
-  });
-  leagues.forEach(function(league){
-    const button =
-      document.createElement("button");
-    button.type =
-      "button";
-    button.className =
-      "filter";
-    if(league === "Todas"){
-      button.classList.add(
-        "active"
-      );
-    }
-    button.textContent =
-      league;
-    button.addEventListener(
-      "click",
-      function(){
-        selectedLeague =
-          league;
-        document
-          .querySelectorAll(".filter")
-          .forEach(function(item){
-            item.classList.remove(
-              "active"
-            );
-          });
+  );
+  leagues.forEach(
+    function(league){
+      const button =
+        document.createElement("button");
+      button.type =
+        "button";
+      button.className =
+        "filter";
+      if(
+        league === "Todas"
+      ){
         button.classList.add(
           "active"
         );
-        renderMatches();
       }
-    );
-    leagueFilters.appendChild(
-      button
-    );
-  });
+      button.textContent =
+        league;
+      button.addEventListener(
+        "click",
+        function(){
+          selectedLeague =
+            league;
+          document
+            .querySelectorAll(".filter")
+            .forEach(
+              function(item){
+                item.classList.remove(
+                  "active"
+                );
+              }
+            );
+          button.classList.add(
+            "active"
+          );
+          renderMatches();
+        }
+      );
+      leagueFilters.appendChild(
+        button
+      );
+    }
+  );
 }
-/* =========================
-   MOSTRAR PARTIDOS
-========================= */
+/* ================= MOSTRAR PARTIDOS ================= */
 function renderMatches(){
-  matchesContainer.innerHTML = "";
+  matchesContainer.innerHTML =
+    "";
   let matches =
     allMatches;
-  if(selectedLeague !== "Todas"){
+  if(
+    selectedLeague !== "Todas"
+  ){
     matches =
       allMatches.filter(
         function(match){
@@ -675,105 +839,113 @@ function renderMatches(){
     );
     return;
   }
-  let currentLeague = "";
-  matches.forEach(function(match){
-    /* ---------- LIGA ---------- */
-    if(match.liga !== currentLeague){
-      currentLeague =
-        match.liga;
-      const title =
+  let currentLeague =
+    "";
+  matches.forEach(
+    function(match){
+      if(
+        match.liga !==
+        currentLeague
+      ){
+        currentLeague =
+          match.liga;
+        const title =
+          document.createElement("div");
+        title.className =
+          "league-title";
+        title.textContent =
+          (match.bandera || "⚽") +
+          " " +
+          (match.liga || "Competición");
+        matchesContainer.appendChild(
+          title
+        );
+      }
+      const card =
         document.createElement("div");
-      title.className =
-        "league-title";
-      title.textContent =
-        (match.bandera || "⚽") +
-        " " +
-        (match.liga || "Competición");
+      card.className =
+        "card";
+      const row =
+        document.createElement("div");
+      row.className =
+        "match";
+      const teams =
+        document.createElement("div");
+      teams.className =
+        "teams";
+      teams.appendChild(
+        createTeamLine(
+          match.local,
+          match.logoLocal
+        )
+      );
+      teams.appendChild(
+        createTeamLine(
+          match.visitante,
+          match.logoVisitante
+        )
+      );
+      const status =
+        document.createElement("div");
+      status.className =
+        "status";
+      status.textContent =
+        match.estadoLargo ||
+        match.estado ||
+        "";
+      teams.appendChild(
+        status
+      );
+      const right =
+        document.createElement("div");
+      right.className =
+        "time";
+      const time =
+        document.createElement("div");
+      time.textContent =
+        formatTime(
+          match.fecha
+        );
+      const analyse =
+        document.createElement("button");
+      analyse.type =
+        "button";
+      analyse.className =
+        "analyse";
+      analyse.textContent =
+        "Analizar";
+      analyse.addEventListener(
+        "click",
+        function(){
+          openMatch(
+            match
+          );
+        }
+      );
+      right.appendChild(
+        time
+      );
+      right.appendChild(
+        analyse
+      );
+      row.appendChild(
+        teams
+      );
+      row.appendChild(
+        right
+      );
+      card.appendChild(
+        row
+      );
       matchesContainer.appendChild(
-        title
+        card
       );
     }
-    /* ---------- TARJETA ---------- */
-    const card =
-      document.createElement("div");
-    card.className =
-      "card";
-    const matchRow =
-      document.createElement("div");
-    matchRow.className =
-      "match";
-    /* ---------- EQUIPOS ---------- */
-    const teams =
-      document.createElement("div");
-    teams.className =
-      "teams";
-    const home =
-      createTeamLine(
-        match.local,
-        match.logoLocal
-      );
-    const away =
-      createTeamLine(
-        match.visitante,
-        match.logoVisitante
-      );
-    const status =
-      document.createElement("div");
-    status.className =
-      "status";
-    status.textContent =
-      match.estadoLargo ||
-      match.estado ||
-      "";
-    teams.appendChild(home);
-    teams.appendChild(away);
-    teams.appendChild(status);
-    /* ---------- HORA ---------- */
-    const right =
-      document.createElement("div");
-    right.className =
-      "time";
-    const time =
-      document.createElement("div");
-    time.textContent =
-      formatTime(
-        match.fecha
-      );
-    const analyse =
-      document.createElement("button");
-    analyse.type =
-      "button";
-    analyse.className =
-      "analyse";
-    analyse.textContent =
-      "Analizar";
-    analyse.addEventListener(
-      "click",
-      function(){
-        openMatch(match);
-      }
-    );
-    right.appendChild(time);
-    right.appendChild(analyse);
-    matchRow.appendChild(
-      teams
-    );
-    matchRow.appendChild(
-      right
-    );
-    card.appendChild(
-      matchRow
-    );
-    matchesContainer.appendChild(
-      card
-    );
-  });
+  );
 }
-/* =========================
-   CREAR LÍNEA DE EQUIPO
-========================= */
+/* ================= EQUIPO ================= */
 function createTeamLine(
-  teamName,
+  name,
   logo
 ){
   const line =
@@ -798,21 +970,19 @@ function createTeamLine(
       image
     );
   }
-  const name =
+  const text =
     document.createElement("span");
-  name.className =
+  text.className =
     "team-name";
-  name.textContent =
-    teamName ||
+  text.textContent =
+    name ||
     "Equipo";
   line.appendChild(
-    name
+    text
   );
   return line;
 }
-/* =========================
-   ABRIR ANÁLISIS
-========================= */
+/* ================= ANÁLISIS ================= */
 function openMatch(match){
   document.getElementById(
     "analysisTitle"
@@ -825,7 +995,9 @@ function openMatch(match){
   ).textContent =
     (match.liga || "Fútbol") +
     " · " +
-    formatTime(match.fecha);
+    formatTime(
+      match.fecha
+    );
   document.getElementById(
     "analysisHome"
   ).textContent =
@@ -840,33 +1012,54 @@ function openMatch(match){
     "analysis"
   );
 }
-/* =========================
-   BOTONES DE NAVEGACIÓN
-========================= */
+/* ================= CAMBIAR DÍA ================= */
+function changeDate(days){
+  const date =
+    new Date(
+      selectedDate +
+      "T12:00:00"
+    );
+  date.setDate(
+    date.getDate() +
+    days
+  );
+  selectedDate =
+    date.toISOString()
+      .slice(0,10);
+  selectedDateElement.textContent =
+    formatDate(
+      selectedDate
+    );
+  loadMatchesForDate(
+    selectedDate,
+    "calendar"
+  );
+}
+/* ================= EVENTOS ================= */
 document
   .getElementById("openMatchesHome")
   .addEventListener(
     "click",
-    function(){
-      openMatches();
-    }
+    openMatches
   );
 navHome.addEventListener(
   "click",
   function(){
-    showScreen("home");
+    showScreen(
+      "home"
+    );
   }
 );
 navMatches.addEventListener(
   "click",
-  function(){
-    openMatches();
-  }
+  openMatches
 );
 navBets.addEventListener(
   "click",
   function(){
-    showScreen("bets");
+    showScreen(
+      "bets"
+    );
   }
 );
 document
@@ -874,12 +1067,56 @@ document
   .addEventListener(
     "click",
     function(){
-      showScreen("matches");
+      showScreen(
+        "matches"
+      );
     }
   );
-/* =========================
-   FIN BETAI
-========================= */
+tabToday.addEventListener(
+  "click",
+  function(){
+    changeMode(
+      "today"
+    );
+  }
+);
+tabRound.addEventListener(
+  "click",
+  function(){
+    changeMode(
+      "round"
+    );
+  }
+);
+tabCalendar.addEventListener(
+  "click",
+  function(){
+    changeMode(
+      "calendar"
+    );
+  }
+);
+document
+  .getElementById("previousDay")
+  .addEventListener(
+    "click",
+    function(){
+      changeDate(
+        -1
+      );
+    }
+  );
+document
+  .getElementById("nextDay")
+  .addEventListener(
+    "click",
+    function(){
+      changeDate(
+        1
+      );
+    }
+  );
+/* ================= FIN ================= */
 </script>
 </body>
 </html>
