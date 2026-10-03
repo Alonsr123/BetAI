@@ -1,1222 +1,587 @@
 export default async function handler(req, res) {
-
-  // ==========================================
+  // =========================================================
   // CORS
-  // ==========================================
-
+  // =========================================================
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, OPTIONS"
-  );
+  res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
   res.setHeader(
     "Access-Control-Allow-Headers",
     "Content-Type, Authorization"
   );
-
   if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
-
-  // ==========================================
-  // CONFIGURACIÓN
-  // ==========================================
-
-  const API_KEY =
-    process.env.API_FOOTBALL_KEY;
-
-  if (!API_KEY) {
-    return res.status(500).json({
-      error:
-        "Falta API_FOOTBALL_KEY en Vercel."
+  // =========================================================
+  // VALIDAR MÉTODO
+  // =========================================================
+  if (req.method !== "GET") {
+    return res.status(405).json({
+      error: "Método no permitido"
     });
   }
-
-  const fixtureId =
-    req.query.fixture;
-
-  if (!fixtureId) {
-    return res.status(400).json({
-      error:
-        "Falta el parámetro fixture."
-    });
-  }
-
-
-  // ==========================================
-  // PETICIÓN A API-FOOTBALL
-  // ==========================================
-
-  async function apiFootball(
-    endpoint
-  ) {
-
-    const response =
-      await fetch(
-        "https://v3.football.api-sports.io" +
-        endpoint,
+  try {
+    // =======================================================
+    // PARÁMETROS
+    // =======================================================
+    const fixtureId = req.query.fixture;
+    if (!fixtureId) {
+      return res.status(400).json({
+        error: "Falta el parámetro fixture"
+      });
+    }
+    const API_KEY = process.env.API_FOOTBALL_KEY;
+    if (!API_KEY) {
+      return res.status(500).json({
+        error: "No existe API_FOOTBALL_KEY en las variables de entorno"
+      });
+    }
+    // =======================================================
+    // FUNCIÓN GENERAL PARA API-FOOTBALL
+    // =======================================================
+    async function apiFootball(endpoint, params = {}) {
+      const query = new URLSearchParams();
+      Object.entries(params).forEach(([key, value]) => {
+        if (
+          value !== undefined &&
+          value !== null &&
+          value !== ""
+        ) {
+          query.append(key, value);
+        }
+      });
+      const url =
+        "https://v3.football.api-sports.io/" +
+        endpoint +
+        "?" +
+        query.toString();
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "x-apisports-key": API_KEY,
+          "Accept": "application/json"
+        }
+      });
+      const data = await response.json();
+      return {
+        http: response.status,
+        data
+      };
+    }
+    // =======================================================
+    // 1. INFORMACIÓN DEL PARTIDO
+    // =======================================================
+    const fixtureResult = await apiFootball(
+      "fixtures",
+      {
+        id: fixtureId
+      }
+    );
+    const fixtureData =
+      fixtureResult.data?.response?.[0];
+    if (!fixtureData) {
+      return res.status(404).json({
+        error: "No se encontró el partido",
+        api: fixtureResult.data?.errors || {}
+      });
+    }
+    const fixture = fixtureData.fixture;
+    const teams = fixtureData.teams;
+    const league = fixtureData.league;
+    const homeId = teams.home.id;
+    const awayId = teams.away.id;
+    // =======================================================
+    // 2. ESTADÍSTICAS DEL PARTIDO
+    // =======================================================
+    const statisticsResult = await apiFootball(
+      "fixtures/statistics",
+      {
+        fixture: fixtureId
+      }
+    );
+    const statistics =
+      statisticsResult.data?.response || [];
+    function getTeamStatistics(teamId) {
+      const item = statistics.find(
+        (entry) =>
+          Number(entry.team?.id) === Number(teamId)
+      );
+      if (!item) {
+        return {};
+      }
+      const result = {};
+      (item.statistics || []).forEach((stat) => {
+        result[stat.type] = stat.value;
+      });
+      return result;
+    }
+    const homeMatchStats =
+      getTeamStatistics(homeId);
+    const awayMatchStats =
+      getTeamStatistics(awayId);
+    // =======================================================
+    // 3. ÚLTIMOS PARTIDOS DE CADA EQUIPO
+    // =======================================================
+    async function getRecentFixtures(teamId) {
+      const result = await apiFootball(
+        "fixtures",
         {
-          method:"GET",
-          headers:{
-            "x-apisports-key":
-              API_KEY,
-            "Accept":
-              "application/json"
-          }
+          team: teamId,
+          last: 10
         }
       );
-
-    const data =
-      await response.json();
-
-    return {
-      status:
-        response.status,
-      data
-    };
-
-  }
-
-
-  // ==========================================
-  // HELPERS
-  // ==========================================
-
-  function number(
-    value
-  ) {
-
-    if (
-      value === null ||
-      value === undefined ||
-      value === ""
-    ) {
-      return null;
+      return result.data?.response || [];
     }
-
-    const n =
-      Number(
-        String(value)
-          .replace("%","")
-      );
-
-    return Number.isFinite(n)
-      ? n
-      : null;
-
-  }
-
-
-  function average(
-    values
-  ) {
-
-    const valid =
-      values.filter(
-        value =>
-          typeof value === "number" &&
-          Number.isFinite(value)
-      );
-
-    if (!valid.length) {
-      return null;
-    }
-
-    return (
-      valid.reduce(
-        (a,b) => a+b,
-        0
-      ) / valid.length
-    );
-
-  }
-
-
-  function round(
-    value,
-    decimals = 2
-  ) {
-
-    if (
-      value === null ||
-      value === undefined
-    ) {
-      return null;
-    }
-
-    return Number(
-      value.toFixed(
-        decimals
-      )
-    );
-
-  }
-
-
-  function percentage(
-    value,
-    total
-  ) {
-
-    if (
-      !total ||
-      value === null ||
-      value === undefined
-    ) {
-      return null;
-    }
-
-    return round(
-      value / total * 100,
-      1
-    );
-
-  }
-
-
-  function getStatistic(
-    statistics,
-    name
-  ) {
-
-    if (!Array.isArray(statistics)) {
-      return null;
-    }
-
-    const item =
-      statistics.find(
-        stat =>
-          String(stat.type)
-            .toLowerCase() ===
-          String(name)
-            .toLowerCase()
-      );
-
-    if (!item) {
-      return null;
-    }
-
-    return number(
-      item.value
-    );
-
-  }
-
-
-  // ==========================================
-  // OBTENER FIXTURE PRINCIPAL
-  // ==========================================
-
-  try {
-
-    const fixtureResult =
-      await apiFootball(
-        "/fixtures?id=" +
-        encodeURIComponent(
-          fixtureId
-        )
-      );
-
-
-    const fixture =
-      fixtureResult.data
-        ?.response?.[0];
-
-
-    if (!fixture) {
-
-      return res.status(404).json({
-        error:
-          "No se encontró el partido."
-      });
-
-    }
-
-
-    const home =
-      fixture.teams.home;
-
-    const away =
-      fixture.teams.away;
-
-    const league =
-      fixture.league;
-
-    const season =
-      league.season;
-
-
-    // ==========================================
-    // LLAMADAS PRINCIPALES
-    // ==========================================
-
-    const homeStatsPromise =
-      apiFootball(
-        "/teams/statistics" +
-        "?league=" +
-        encodeURIComponent(
-          league.id
-        ) +
-        "&season=" +
-        encodeURIComponent(
-          season
-        ) +
-        "&team=" +
-        encodeURIComponent(
-          home.id
-        )
-      );
-
-
-    const awayStatsPromise =
-      apiFootball(
-        "/teams/statistics" +
-        "?league=" +
-        encodeURIComponent(
-          league.id
-        ) +
-        "&season=" +
-        encodeURIComponent(
-          season
-        ) +
-        "&team=" +
-        encodeURIComponent(
-          away.id
-        )
-      );
-
-
-    const h2hPromise =
-      apiFootball(
-        "/fixtures/headtohead" +
-        "?h2h=" +
-        encodeURIComponent(
-          home.id +
-          "-" +
-          away.id
-        ) +
-        "&last=10"
-      );
-
-
-    const playersHomePromise =
-      apiFootball(
-        "/players" +
-        "?team=" +
-        encodeURIComponent(
-          home.id
-        ) +
-        "&season=" +
-        encodeURIComponent(
-          season
-        ) +
-        "&page=1"
-      );
-
-
-    const playersAwayPromise =
-      apiFootball(
-        "/players" +
-        "?team=" +
-        encodeURIComponent(
-          away.id
-        ) +
-        "&season=" +
-        encodeURIComponent(
-          season
-        ) +
-        "&page=1"
-      );
-
-
-    // ==========================================
-    // PARTIDOS RECIENTES
-    // ==========================================
-
-    const homeFixturesPromise =
-      apiFootball(
-        "/fixtures" +
-        "?team=" +
-        encodeURIComponent(
-          home.id
-        ) +
-        "&last=5"
-      );
-
-
-    const awayFixturesPromise =
-      apiFootball(
-        "/fixtures" +
-        "?team=" +
-        encodeURIComponent(
-          away.id
-        ) +
-        "&last=5"
-      );
-
-
-    const [
-      homeStatsResult,
-      awayStatsResult,
-      h2hResult,
-      playersHomeResult,
-      playersAwayResult,
-      homeFixturesResult,
-      awayFixturesResult
-    ] =
-      await Promise.all([
-        homeStatsPromise,
-        awayStatsPromise,
-        h2hPromise,
-        playersHomePromise,
-        playersAwayPromise,
-        homeFixturesPromise,
-        awayFixturesPromise
-      ]);
-
-
-    // ==========================================
-    // ESTADÍSTICAS GENERALES
-    // ==========================================
-
-    const homeStats =
-      homeStatsResult.data?.response;
-
-    const awayStats =
-      awayStatsResult.data?.response;
-
-
-    const homeGoalsFor =
-      number(
-        homeStats?.goals?.for?.average?.total
-      );
-
-    const homeGoalsAgainst =
-      number(
-        homeStats?.goals?.against?.average?.total
-      );
-
-    const awayGoalsFor =
-      number(
-        awayStats?.goals?.for?.average?.total
-      );
-
-    const awayGoalsAgainst =
-      number(
-        awayStats?.goals?.against?.average?.total
-      );
-
-
-    // ==========================================
-    // TARJETAS
-    // ==========================================
-
-    const homeYellow =
-      number(
-        homeStats?.cards?.yellow?.total
-      );
-
-    const awayYellow =
-      number(
-        awayStats?.cards?.yellow?.total
-      );
-
-    const homeRed =
-      number(
-        homeStats?.cards?.red?.total
-      );
-
-    const awayRed =
-      number(
-        awayStats?.cards?.red?.total
-      );
-
-
-    const homeMatches =
-      number(
-        homeStats?.fixtures?.played?.total
-      );
-
-    const awayMatches =
-      number(
-        awayStats?.fixtures?.played?.total
-      );
-
-
-    const homeYellowAvg =
-      percentage(
-        homeYellow,
-        homeMatches
-      );
-
-    const awayYellowAvg =
-      percentage(
-        awayYellow,
-        awayMatches
-      );
-
-
-    // ==========================================
-    // BTTS
-    // ==========================================
-
-    const homeBTTS =
-      number(
-        homeStats?.goals?.for?.under_over?.["0.5"]?.over
-      );
-
-
-    // ==========================================
-    // ÚLTIMOS PARTIDOS
-    // ==========================================
-
     const homeRecent =
-      homeFixturesResult.data
-        ?.response || [];
-
+      await getRecentFixtures(homeId);
     const awayRecent =
-      awayFixturesResult.data
-        ?.response || [];
-
-
-    function processRecent(
+      await getRecentFixtures(awayId);
+    // =======================================================
+    // 4. PROCESAR ESTADÍSTICAS HISTÓRICAS
+    // =======================================================
+    function average(values) {
+      const valid = values
+        .map(Number)
+        .filter(
+          (value) =>
+            Number.isFinite(value)
+        );
+      if (!valid.length) {
+        return null;
+      }
+      return (
+        valid.reduce(
+          (sum, value) =>
+            sum + value,
+          0
+        ) / valid.length
+      );
+    }
+    function round(value, decimals = 2) {
+      if (
+        value === null ||
+        value === undefined ||
+        !Number.isFinite(Number(value))
+      ) {
+        return null;
+      }
+      return Number(
+        Number(value).toFixed(decimals)
+      );
+    }
+    function processRecentFixtures(
       fixtures,
       teamId
     ) {
-
-      const result = {
-
-        matches:0,
-
-        goalsFor:[],
-
-        goalsAgainst:[],
-
-        btts:[],
-
-        wins:0,
-
-        draws:0,
-
-        losses:0
-
-      };
-
-
-      fixtures.forEach(
-        fixture => {
-
-          const isHome =
-            fixture.teams.home.id ===
-            teamId;
-
-          const gf =
-            isHome
-              ? fixture.goals.home
-              : fixture.goals.away;
-
-          const ga =
-            isHome
-              ? fixture.goals.away
-              : fixture.goals.home;
-
-
-          if (
-            gf === null ||
-            ga === null
-          ) {
-            return;
-          }
-
-
-          result.matches++;
-
-          result.goalsFor.push(
-            Number(gf)
-          );
-
-          result.goalsAgainst.push(
-            Number(ga)
-          );
-
-
-          if (
-            gf > 0 &&
-            ga > 0
-          ) {
-
-            result.btts.push(
-              true
-            );
-
-          } else {
-
-            result.btts.push(
-              false
-            );
-
-          }
-
-
-          if (gf > ga) {
-
-            result.wins++;
-
-          } else if (
-            gf === ga
-          ) {
-
-            result.draws++;
-
-          } else {
-
-            result.losses++;
-
-          }
-
-        }
-      );
-
-
-      return result;
-
-    }
-
-
-    const homeRecentData =
-      processRecent(
-        homeRecent,
-        home.id
-      );
-
-
-    const awayRecentData =
-      processRecent(
-        awayRecent,
-        away.id
-      );
-
-
-    const homeRecentGoals =
-      average(
-        homeRecentData.goalsFor
-      );
-
-
-    const awayRecentGoals =
-      average(
-        awayRecentData.goalsFor
-      );
-
-
-    const homeRecentConceded =
-      average(
-        homeRecentData.goalsAgainst
-      );
-
-
-    const awayRecentConceded =
-      average(
-        awayRecentData.goalsAgainst
-      );
-
-
-    const homeRecentBTTS =
-      percentage(
-        homeRecentData.btts.filter(
-          Boolean
-        ).length,
-        homeRecentData.btts.length
-      );
-
-
-    const awayRecentBTTS =
-      percentage(
-        awayRecentData.btts.filter(
-          Boolean
-        ).length,
-        awayRecentData.btts.length
-      );
-
-
-    // ==========================================
-    // H2H
-    // ==========================================
-
-    const h2hFixtures =
-      h2hResult.data
-        ?.response || [];
-
-
-    const h2hData = {
-
-      matches:
-        h2hFixtures.length,
-
-      goals:[],
-
-      btts:[],
-
-      homeWins:0,
-
-      awayWins:0,
-
-      draws:0
-
-    };
-
-
-    h2hFixtures.forEach(
-      match => {
-
-        const gh =
-          match.goals?.home;
-
-        const ga =
-          match.goals?.away;
-
-
+      let goalsFor = [];
+      let goalsAgainst = [];
+      let corners = [];
+      let yellowCards = [];
+      let btts = 0;
+      let totalMatches = 0;
+      let firstHalfGoalsFor = [];
+      let secondHalfGoalsFor = [];
+      fixtures.forEach((item) => {
+        const homeTeam =
+          item.teams?.home?.id;
+        const awayTeam =
+          item.teams?.away?.id;
+        const homeGoals =
+          item.goals?.home;
+        const awayGoals =
+          item.goals?.away;
         if (
-          gh === null ||
-          ga === null ||
-          gh === undefined ||
-          ga === undefined
+          homeGoals === null ||
+          awayGoals === null ||
+          homeGoals === undefined ||
+          awayGoals === undefined
         ) {
           return;
         }
-
-
-        h2hData.goals.push(
-          Number(gh) +
-          Number(ga)
+        const isHome =
+          Number(homeTeam) ===
+          Number(teamId);
+        const scored =
+          isHome
+            ? homeGoals
+            : awayGoals;
+        const conceded =
+          isHome
+            ? awayGoals
+            : homeGoals;
+        goalsFor.push(
+          Number(scored)
         );
-
-
-        h2hData.btts.push(
-          Number(gh) > 0 &&
-          Number(ga) > 0
+        goalsAgainst.push(
+          Number(conceded)
         );
-
-
         if (
-          match.teams.home.id ===
-          home.id
+          Number(homeGoals) > 0 &&
+          Number(awayGoals) > 0
         ) {
-
-          if (gh > ga) {
-            h2hData.homeWins++;
-          } else if (gh === ga) {
-            h2hData.draws++;
-          } else {
-            h2hData.awayWins++;
-          }
-
-        } else {
-
-          if (gh > ga) {
-            h2hData.awayWins++;
-          } else if (gh === ga) {
-            h2hData.draws++;
-          } else {
-            h2hData.homeWins++;
-          }
-
+          btts++;
         }
-
-      }
-    );
-
-
-    // ==========================================
-    // JUGADORES
-    // ==========================================
-
-    function processPlayers(
-      result
-    ) {
-
-      const players =
-        result.data?.response || [];
-
-
-      return players
-        .map(
-          item => {
-
-            const player =
-              item.player;
-
-            const stats =
-              item.statistics?.[0];
-
-
-            if (!player || !stats) {
-              return null;
-            }
-
-
-            return {
-
-              id:
-                player.id,
-
-              name:
-                player.name,
-
-              photo:
-                player.photo || "",
-
-              position:
-                stats.games?.position ||
-                "",
-
-              appearances:
-                stats.games?.appearences ||
-                0,
-
-              minutes:
-                stats.games?.minutes ||
-                0,
-
-              rating:
-                number(
-                  stats.games?.rating
-                ),
-
-              goals:
-                stats.goals?.total ||
-                0,
-
-              assists:
-                stats.goals?.assists ||
-                0,
-
-              shots:
-                stats.shots?.total ||
-                0,
-
-              shotsOn:
-                stats.shots?.on ||
-                0,
-
-              passes:
-                stats.passes?.total ||
-                0,
-
-              keyPasses:
-                stats.passes?.key ||
-                0,
-
-              tackles:
-                stats.tackles?.total ||
-                0,
-
-              interceptions:
-                stats.tackles?.interceptions ||
-                0,
-
-              duelsWon:
-                stats.duels?.won ||
-                0,
-
-              dribbles:
-                stats.dribbles?.success ||
-                0,
-
-              yellow:
-                stats.cards?.yellow ||
-                0,
-
-              red:
-                stats.cards?.red ||
-                0
-
-            };
-
-          }
-        )
-        .filter(Boolean)
-        .sort(
-          (a,b) =>
-            (b.goals - a.goals) ||
-            (b.assists - a.assists) ||
-            (b.minutes - a.minutes)
-        )
-        .slice(0,10);
-
-    }
-
-
-    const homePlayers =
-      processPlayers(
-        playersHomeResult
-      );
-
-
-    const awayPlayers =
-      processPlayers(
-        playersAwayResult
-      );
-
-
-    // ==========================================
-    // MERCADOS DESTACADOS
-    // ==========================================
-
-    const totalGoalsAverage =
-      average([
-        homeGoalsFor,
-        homeGoalsAgainst,
-        awayGoalsFor,
-        awayGoalsAgainst
-      ]);
-
-
-    const combinedRecentGoals =
-      average([
-        homeRecentGoals,
-        homeRecentConceded,
-        awayRecentGoals,
-        awayRecentConceded
-      ]);
-
-
-    const markets = [];
-
-
-    // Más de 1.5
-    if (
-      combinedRecentGoals !== null
-    ) {
-
-      const probability =
-        Math.min(
-          92,
-          Math.max(
-            50,
-            Math.round(
-              50 +
-              combinedRecentGoals *
-              18
+        totalMatches++;
+        // API-Football puede devolver los goles
+        // por parte en fixtures completos.
+        const halftimeHome =
+          item.score?.halftime?.home;
+        const halftimeAway =
+          item.score?.halftime?.away;
+        const halftimeScored =
+          isHome
+            ? halftimeHome
+            : halftimeAway;
+        const halftimeTotal =
+          Number.isFinite(
+            Number(halftimeScored)
+          )
+            ? Number(halftimeScored)
+            : 0;
+        const secondHalf =
+          Number(scored) -
+          halftimeTotal;
+        firstHalfGoalsFor.push(
+          halftimeTotal
+        );
+        secondHalfGoalsFor.push(
+          secondHalf
+        );
+      });
+      return {
+        partidos: totalMatches,
+        golesFavor:
+          round(
+            average(goalsFor)
+          ),
+        golesContra:
+          round(
+            average(goalsAgainst)
+          ),
+        golesPrimeraParte:
+          round(
+            average(
+              firstHalfGoalsFor
             )
+          ),
+        golesSegundaParte:
+          round(
+            average(
+              secondHalfGoalsFor
+            )
+          ),
+        ambosMarcan:
+          totalMatches
+            ? round(
+                (btts /
+                  totalMatches) *
+                  100
+              )
+            : null,
+        cornersPorPartido:
+          round(
+            average(corners)
+          ),
+        tarjetasPorPartido:
+          round(
+            average(yellowCards)
           )
-        );
-
-
-      markets.push({
-
-        market:
-          "Más de 1,5 goles",
-
-        probability
-
-      });
-
+      };
     }
-
-
-    // BTTS
-    const bttsValues = [
-      homeRecentBTTS,
-      awayRecentBTTS
-    ].filter(
-      value =>
-        value !== null
-    );
-
-
-    if (bttsValues.length) {
-
-      const bttsProbability =
-        Math.round(
-          average(
-            bttsValues
-          )
+    const homeForm =
+      processRecentFixtures(
+        homeRecent,
+        homeId
+      );
+    const awayForm =
+      processRecentFixtures(
+        awayRecent,
+        awayId
+      );
+    // =======================================================
+    // 5. ESTADÍSTICAS DEL PARTIDO ACTUAL
+    // =======================================================
+    function parsePercentage(value) {
+      if (
+        typeof value === "string" &&
+        value.includes("%")
+      ) {
+        return Number(
+          value.replace("%", "")
         );
-
-
-      markets.push({
-
-        market:
-          "Ambos marcan",
-
-        probability:
-          bttsProbability
-
-      });
-
+      }
+      return Number(value);
     }
-
-
-    // ==========================================
-    // ORDENAR MERCADOS
-    // ==========================================
-
-    markets.sort(
-      (a,b) =>
-        b.probability -
-        a.probability
-    );
-
-
-    const mercadosDestacados =
-      markets.slice(0,2);
-
-
-    // ==========================================
-    // RESPUESTA
-    // ==========================================
-
+    const matchStats = {
+      local: {
+        posesion:
+          homeMatchStats["Ball Possession"] || null,
+        tiros:
+          homeMatchStats["Total Shots"] || null,
+        tirosPuerta:
+          homeMatchStats["Shots on Goal"] || null,
+        corners:
+          homeMatchStats["Corner Kicks"] || null,
+        faltas:
+          homeMatchStats["Fouls"] || null,
+        tarjetasAmarillas:
+          homeMatchStats["Yellow Cards"] || null,
+        tarjetasRojas:
+          homeMatchStats["Red Cards"] || null,
+        pases:
+          homeMatchStats["Total passes"] || null,
+        precisionPases:
+          homeMatchStats["Passes %"] || null
+      },
+      visitante: {
+        posesion:
+          awayMatchStats["Ball Possession"] || null,
+        tiros:
+          awayMatchStats["Total Shots"] || null,
+        tirosPuerta:
+          awayMatchStats["Shots on Goal"] || null,
+        corners:
+          awayMatchStats["Corner Kicks"] || null,
+        faltas:
+          awayMatchStats["Fouls"] || null,
+        tarjetasAmarillas:
+          awayMatchStats["Yellow Cards"] || null,
+        tarjetasRojas:
+          awayMatchStats["Red Cards"] || null,
+        pases:
+          awayMatchStats["Total passes"] || null,
+        precisionPases:
+          awayMatchStats["Passes %"] || null
+      }
+    };
+    // =======================================================
+    // 6. JUGADORES
+    // =======================================================
+    async function getPlayers(teamId) {
+      const result = await apiFootball(
+        "players",
+        {
+          team: teamId,
+          season:
+            league.season
+        }
+      );
+      return result.data?.response || [];
+    }
+    let homePlayers = [];
+    let awayPlayers = [];
+    try {
+      homePlayers =
+        await getPlayers(homeId);
+    } catch (error) {
+      console.error(
+        "Error jugadores local:",
+        error
+      );
+    }
+    try {
+      awayPlayers =
+        await getPlayers(awayId);
+    } catch (error) {
+      console.error(
+        "Error jugadores visitante:",
+        error
+      );
+    }
+    function processPlayers(players) {
+      return players
+        .map((item) => {
+          const player =
+            item.player || {};
+          const statistics =
+            item.statistics?.[0] || {};
+          const games =
+            statistics.games || {};
+          const goals =
+            statistics.goals || {};
+          const shots =
+            statistics.shots || {};
+          const passes =
+            statistics.passes || {};
+          return {
+            id: player.id,
+            nombre: player.name,
+            foto: player.photo,
+            posicion:
+              games.position || null,
+            partidos:
+              games.appearences || 0,
+            titular:
+              games.lineups || 0,
+            minutos:
+              games.minutes || 0,
+            goles:
+              goals.total || 0,
+            asistencias:
+              goals.assists || 0,
+            tiros:
+              shots.total || 0,
+            tirosPuerta:
+              shots.on || 0,
+            pases:
+              passes.total || 0,
+            precisionPases:
+              passes.accuracy || null
+          };
+        })
+        .filter(
+          (player) =>
+            player.nombre
+        )
+        .sort(
+          (a, b) =>
+            Number(b.goles || 0) -
+            Number(a.goles || 0)
+        )
+        .slice(0, 10);
+    }
+    const homePlayerStats =
+      processPlayers(
+        homePlayers
+      );
+    const awayPlayerStats =
+      processPlayers(
+        awayPlayers
+      );
+    // =======================================================
+    // 7. MERCADOS DESTACADOS
+    // =======================================================
+    const homeGoals =
+      homeForm.golesFavor;
+    const awayGoals =
+      awayForm.golesFavor;
+    const expectedGoals =
+      homeGoals !== null &&
+      awayGoals !== null
+        ? homeGoals + awayGoals
+        : null;
+    const bttsHome =
+      homeForm.ambosMarcan;
+    const bttsAway =
+      awayForm.ambosMarcan;
+    const bttsAverage =
+      bttsHome !== null &&
+      bttsAway !== null
+        ? (
+            bttsHome +
+            bttsAway
+          ) / 2
+        : null;
+    const mercados = [];
+    if (
+      expectedGoals !== null
+    ) {
+      mercados.push({
+        mercado: "Más de 1.5 goles",
+        valorModelo:
+          round(
+            expectedGoals,
+            2
+          ),
+        tipo: "goles",
+        descripcion:
+          "Basado en el promedio reciente de goles de ambos equipos."
+      });
+    }
+    if (
+      expectedGoals !== null
+    ) {
+      mercados.push({
+        mercado: "Más de 2.5 goles",
+        valorModelo:
+          round(
+            expectedGoals,
+            2
+          ),
+        tipo: "goles",
+        descripcion:
+          "Referencia estadística basada en la producción goleadora reciente."
+      });
+    }
+    if (
+      bttsAverage !== null
+    ) {
+      mercados.push({
+        mercado: "Ambos equipos marcan",
+        valorModelo:
+          round(
+            bttsAverage,
+            1
+          ),
+        tipo: "btts",
+        descripcion:
+          "Porcentaje medio de partidos recientes en los que ambos equipos marcaron."
+      });
+    }
+    // =======================================================
+    // 8. RESPUESTA FINAL
+    // =======================================================
     return res.status(200).json({
-
-      ok:true,
-
-      fixture:{
-
-        id:
-          fixture.fixture.id,
-
-        fecha:
-          fixture.fixture.date,
-
+      ok: true,
+      partido: {
+        id: fixture.id,
+        fecha: fixture.date,
         estado:
-          fixture.fixture.status.short,
-
-        liga:
-          league.name,
-
-        pais:
-          league.country,
-
-        season,
-
-        jornada:
-          league.round
-
-      },
-
-      equipos:{
-
-        local:{
-
-          id:
-            home.id,
-
+          fixture.status?.short || null,
+        estadoLargo:
+          fixture.status?.long || null,
+        local: {
+          id: homeId,
           nombre:
-            home.name,
-
+            teams.home.name,
           logo:
-            home.logo
-
+            teams.home.logo || ""
         },
-
-        visitante:{
-
-          id:
-            away.id,
-
+        visitante: {
+          id: awayId,
           nombre:
-            away.name,
-
+            teams.away.name,
           logo:
-            away.logo
-
+            teams.away.logo || ""
+        },
+        liga: {
+          id: league.id,
+          nombre: league.name,
+          pais: league.country,
+          temporada: league.season
         }
-
       },
-
-      goles:{
-
-        local:{
-
-          aFavor:
-            homeGoalsFor,
-
-          enContra:
-            homeGoalsAgainst,
-
-          recientes:
-            homeRecentGoals,
-
-          recientesRecibidos:
-            homeRecentConceded
-
-        },
-
-        visitante:{
-
-          aFavor:
-            awayGoalsFor,
-
-          enContra:
-            awayGoalsAgainst,
-
-          recientes:
-            awayRecentGoals,
-
-          recientesRecibidos:
-            awayRecentConceded
-
-        },
-
-        promedioTotal:
-          totalGoalsAverage
-
+      promedios: {
+        local: homeForm,
+        visitante: awayForm
       },
-
-      corners:{
-
+      estadisticasPartido:
+        matchStats,
+      jugadores: {
         local:
-          "No disponible",
-
+          homePlayerStats,
         visitante:
-          "No disponible",
-
-        localPrimeraParte:
-          "No disponible",
-
-        visitantePrimeraParte:
-          "No disponible",
-
-        localSegundaParte:
-          "No disponible",
-
-        visitanteSegundaParte:
-          "No disponible"
-
+          awayPlayerStats
       },
-
-      btts:{
-
-        localReciente:
-          homeRecentBTTS,
-
-        visitanteReciente:
-          awayRecentBTTS,
-
-        h2h:
-          percentage(
-            h2hData.btts.filter(
-              Boolean
-            ).length,
-            h2hData.btts.length
-          )
-
-      },
-
-      tarjetas:{
-
-        local:
-
-          homeYellowAvg,
-
-        visitante:
-
-          awayYellowAvg,
-
-        localAmarillas:
-          homeYellow,
-
-        visitanteAmarillas:
-          awayYellow,
-
-        localRojas:
-          homeRed,
-
-        visitanteRojas:
-          awayRed
-
-      },
-
-      forma:{
-
-        local:{
-
-          victorias:
-            homeRecentData.wins,
-
-          empates:
-            homeRecentData.draws,
-
-          derrotas:
-            homeRecentData.losses
-
-        },
-
-        visitante:{
-
-          victorias:
-            awayRecentData.wins,
-
-          empates:
-            awayRecentData.draws,
-
-          derrotas:
-            awayRecentData.losses
-
-        }
-
-      },
-
-      h2h:{
-
-        partidos:
-          h2hData.matches,
-
-        promedioGoles:
-          average(
-            h2hData.goals
-          ),
-
-        btts:
-          percentage(
-            h2hData.btts.filter(
-              Boolean
-            ).length,
-            h2hData.btts.length
-          ),
-
-        victoriasLocal:
-          h2hData.homeWins,
-
-        empates:
-          h2hData.draws,
-
-        victoriasVisitante:
-          h2hData.awayWins
-
-      },
-
-      jugadores:{
-
-        local:
-          homePlayers,
-
-        visitante:
-          awayPlayers
-
-      },
-
-      mercadosDestacados
-
+      mercados,
+      meta: {
+        partidosAnalizadosLocal:
+          homeRecent.length,
+        partidosAnalizadosVisitante:
+          awayRecent.length,
+        nota:
+          "Los valores son estadísticas y estimaciones del modelo; no garantizan resultados."
+      }
     });
-
   } catch (error) {
-
     console.error(
       "BetAI analysis error:",
       error
     );
-
     return res.status(500).json({
-
-      ok:false,
-
+      ok: false,
       error:
-        error.message
-
+        error.message ||
+        "Error interno del servidor"
     });
-
   }
-
 }
